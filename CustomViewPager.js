@@ -1,13 +1,15 @@
 import React, {Component, PropTypes} from 'react';
 import {Dimensions, Animated, Text, View, TouchableOpacity, PanResponder, StyleSheet} from 'react-native';
 
-import StaticRenderer from 'react-native/Libraries/Components/StaticRenderer';
-
 import CustomViewPageIndicator from './CustomViewPageIndicator';
 import CustomViewPagerDataSource from './CustomViewPagerDataSource';
 
-const DEFAULT_SLIDE_INTERVAL_MS = 500;
-const DEFAULT_SLIDE_DIRECTION = 'horizontal';
+const DEFAULT_SLIDE_INTERVAL_MS = 3000;
+
+const SLIDE_DIRECTION_HORIZONTAL = "horizontal";
+const SLIDE_DIRECTION_VERTICAL = "vertical";
+
+const DEFAULT_SLIDE_DIRECTION = SLIDE_DIRECTION_HORIZONTAL;
 
 export default class CustomViewPager extends Component {
 
@@ -19,6 +21,8 @@ export default class CustomViewPager extends Component {
             currentPageIndex: 0,
             // viewPager的宽度
             viewWidth: 0,
+            // viewPager的高度
+            viewHeight: 0,
             // 一次滑动过程中，标示滑动程度的百分比，从-1到1
             scrollValue: new Animated.Value(0),
         };
@@ -28,20 +32,20 @@ export default class CustomViewPager extends Component {
 
     static propTypes = {
         ...View.propTypes,
-        dataSource: PropTypes.instanceOf(CustomViewPagerDataSource).isRequired,
-        renderPage: PropTypes.func.isRequired,
-        onChangePage: PropTypes.func,
-        renderPageIndicator: PropTypes.oneOfType([
-            PropTypes.func,
-            PropTypes.bool
+        dataSource: React.PropTypes.instanceOf(CustomViewPagerDataSource).isRequired,
+        renderPage: React.PropTypes.func.isRequired,
+        onChangePage: React.PropTypes.func,
+        renderPageIndicator: React.PropTypes.oneOfType([
+            React.PropTypes.func,
+            React.PropTypes.bool
         ]),
-        isLoop: PropTypes.bool,
-        locked: PropTypes.bool,
-        autoPlay: PropTypes.bool,
-        animation: PropTypes.func,
-        initialPage: PropTypes.number,
-        slideIntervalMs: PropTypes.number,
-        slideDirection: PropTypes.string,
+        isLoop: React.PropTypes.bool,
+        locked: React.PropTypes.bool,
+        autoPlay: React.PropTypes.bool,
+        animation: React.PropTypes.func,
+        initialPage: React.PropTypes.number,
+        slideIntervalMs: React.PropTypes.number,
+        slideDirection: React.PropTypes.oneOf([SLIDE_DIRECTION_HORIZONTAL, SLIDE_DIRECTION_VERTICAL]),
     };
 
     static defaultProps = {
@@ -61,17 +65,71 @@ export default class CustomViewPager extends Component {
         },
     }
 
+    // 根据滑动方向不同，有效滑动距离的计算方向也不同
+    getEffectiveSlideDistance(gestureState) {
+
+        // 如果是横向滑动的viewPager，则有效滑动距离为x方向上的
+        if (this.props.slideDirection == SLIDE_DIRECTION_HORIZONTAL) {
+            return gestureState.dx;
+        }
+        // 如果是纵向滑动的viewPager，则有效滑动距离为y方向上的
+        else if (this.props.slideDirection == SLIDE_DIRECTION_VERTICAL) {
+            return gestureState.dy;
+        }
+    }
+
+    // 根据滑动方向不同，无效滑动距离的计算方向也不同
+    getIneffectiveSlideDistance(gestureState) {
+
+        // 如果是横向滑动的viewPager，则有效滑动距离为x方向上的
+        if (this.props.slideDirection == SLIDE_DIRECTION_HORIZONTAL) {
+            return gestureState.dy;
+        }
+        // 如果是纵向滑动的viewPager，则有效滑动距离为y方向上的
+        else if (this.props.slideDirection == SLIDE_DIRECTION_VERTICAL) {
+            return gestureState.dx;
+        }
+    }
+
+    // 根据滑动方向不同，有效滑动比例的计算方向也不同
+    getEffectiveSlideRatio(gestureState) {
+
+        // 如果是横向滑动的viewPager，则有效滑动距离为x方向上的
+        if (this.props.slideDirection == SLIDE_DIRECTION_HORIZONTAL) {
+            return gestureState.dx / this.state.viewWidth;
+        }
+        // 如果是纵向滑动的viewPager，则有效滑动距离为y方向上的
+        else if (this.props.slideDirection == SLIDE_DIRECTION_VERTICAL) {
+            return gestureState.dy / this.state.viewHeight;
+        }
+    }
+
+    // 根据滑动方向不同，有效滑动速度的计算方向也不同
+    getEffectiveSlideVelocity(gestureState) {
+
+        // 如果是横向滑动的viewPager，则有效滑动距离为x方向上的
+        if (this.props.slideDirection == SLIDE_DIRECTION_HORIZONTAL) {
+            return gestureState.vx;
+        }
+        // 如果是纵向滑动的viewPager，则有效滑动距离为y方向上的
+        else if (this.props.slideDirection == SLIDE_DIRECTION_VERTICAL) {
+            return gestureState.vy;
+        }
+    }
+
     componentWillMount() {
 
         let onRelease = (e, gestureState) => {
 
-            let dxToViewWidthRatio = gestureState.dx / this.state.viewWidth;
-            let vx = gestureState.vx;
+            // 根据滑动方向不同，滑动比例和门槛速度的计算方向也不同
+            let effectiveSlideDistance = this.getEffectiveSlideDistance(gestureState);
+            let effectiveSlideRatio = this.getEffectiveSlideRatio(gestureState);
+            let effectiveSlideVelocity = this.getEffectiveSlideVelocity(gestureState);
 
             let pageIndexDiff = 0;
-            if (dxToViewWidthRatio < -0.5 || (dxToViewWidthRatio < 0 && vx <= -1e-2)) {
+            if (effectiveSlideRatio < -0.5 || (effectiveSlideRatio < 0 && effectiveSlideVelocity <= -1e-2)) {
                 pageIndexDiff = 1;
-            } else if (dxToViewWidthRatio > 0.5 || (dxToViewWidthRatio > 0 && vx >= 1e-2)) {
+            } else if (effectiveSlideRatio > 0.5 || (effectiveSlideRatio > 0 && effectiveSlideVelocity >= 1e-2)) {
                 pageIndexDiff = -1;
             }
 
@@ -83,8 +141,13 @@ export default class CustomViewPager extends Component {
             // 触摸点开始移动时,询问是否响应
             onMoveShouldSetPanResponder: (e, gestureState) => {
 
-                // 如果横向移动距离大于纵向移动距离
-                if (Math.abs(gestureState.dx) > Math.abs(gestureState.dy)) {
+                // 有效方向上的滑动距离
+                let effectiveSlideDistance = this.getEffectiveSlideDistance(gestureState);
+                // 无效方向上的滑动距离
+                let ineffectiveSlideDistance = this.getIneffectiveSlideDistance(gestureState);
+
+                // 如果有效方向上的滑动距离大于无效方向上的滑动距离
+                if (Math.abs(effectiveSlideDistance) > Math.abs(ineffectiveSlideDistance)) {
 
                     // 正在滑动动画中，不响应手势
                     if (this.duringFling) {
@@ -98,9 +161,9 @@ export default class CustomViewPager extends Component {
 
                     // 非loop模式下，在首页向右滑，或在末页向左滑，不响应手势
                     if (this.props.isLoop === false) {
-                        if (this.getCurrentPageIndex() == 0 && gestureState.dx > 0) {
+                        if (this.getCurrentPageIndex() == 0 && effectiveSlideDistance > 0) {
                             return false;
-                        } else if (this.getCurrentPageIndex() == this.getPageCount() - 1 && gestureState.dx < 0) {
+                        } else if (this.getCurrentPageIndex() == this.getPageCount() - 1 && effectiveSlideDistance < 0) {
                             return false;
                         }
                     }
@@ -117,7 +180,7 @@ export default class CustomViewPager extends Component {
             // 滑动中,页跟着触摸点移动
             onPanResponderMove: (e, gestureState) => {
 
-                let scrollValue = gestureState.dx / this.state.viewWidth;
+                let scrollValue = this.getEffectiveSlideRatio(gestureState);
                 this.state.scrollValue.setValue(scrollValue);
             },
         });
@@ -317,7 +380,7 @@ export default class CustomViewPager extends Component {
             return <View style={this.props.style}/>;
         }
 
-        if (this.state.viewWidth < 0) {
+        if (this.state.viewWidth < 0 || this.state.viewHeight < 0) {
             return <View style={this.props.style}/>;
         }
 
@@ -378,15 +441,39 @@ export default class CustomViewPager extends Component {
         }
 
         // 拼接前面,当前,后面的页,生成3个page组成的组合体来显示,并在其上面平移到正确page
-        let threePagesCompositionStyle = {
-            width: this.state.viewWidth * 3,
-            flex: 1,
-            flexDirection: 'row'
-        };
+        // 根据viewPager的滑动方向为横向或纵向而有不同
+        let threePagesCompositionStyle;
 
-        let translateX = this.state.scrollValue.interpolate({
-            inputRange: [-1, 1], outputRange: [-2 * this.state.viewWidth, 0]
-        });
+        // 滑动量scrollValue对应到translation平移的插值结果
+        let transform;
+        // 指示平移效果的style
+        let transformStyle;
+
+        // viewPager为横向滑动
+        if (this.props.slideDirection == SLIDE_DIRECTION_HORIZONTAL) {
+            threePagesCompositionStyle =
+                {
+                    width: this.state.viewWidth * 3,
+                    flex : 1,
+                    flexDirection: 'row',
+                };
+            transform = this.state.scrollValue.interpolate({
+                inputRange: [-1, 1], outputRange: [-2 * this.state.viewWidth, 0]
+            });
+            transformStyle = {transform: [{translateX: transform}]};
+        }
+        // viewPager为纵向滑动
+        else if (this.props.slideDirection == SLIDE_DIRECTION_VERTICAL) {
+            threePagesCompositionStyle =
+                {
+                    height: this.state.viewHeight * 3,
+                    flexDirection: 'column',
+                }
+            transform = this.state.scrollValue.interpolate({
+                inputRange: [-1, 1], outputRange: [-2 * this.state.viewHeight, 0]
+            });
+            transformStyle = {transform: [{translateY: transform}]};
+        }
 
         return (
             // style由上级提供
@@ -395,22 +482,29 @@ export default class CustomViewPager extends Component {
 
             // 获取view的宽度
             let viewWidth = event.nativeEvent.layout.width;
+            // 获取view的高度
+            let viewHeight = event.nativeEvent.layout.height;
 
             // 若view的宽度为空或等于之前的宽度
             if (!viewWidth || this.state.viewWidth === viewWidth) {
               return;
             }
 
+            // 若view的高度为空或等于之前的高度
+            if (!viewHeight || this.state.viewHeight === viewHeight) {
+              return;
+            }
+
             // 向state中更新最新的view宽度
             this.setState({
-              currentPageIndex: this.state.currentPageIndex,
               viewWidth: viewWidth,
+              viewHeight: viewHeight,
             });
           }}
             >
 
                 <Animated.View
-                    style={[threePagesCompositionStyle, {transform: [{translateX : translateX}]}]}
+                    style={[threePagesCompositionStyle, transformStyle]}
                     {...this.panResponder.panHandlers}>
                     {prevPage}{curPage}{nextPage}
                 </Animated.View>

@@ -26,7 +26,7 @@ export default class Home extends Component {
     }
 
     getRenderPage(pageKey: string, pageIndex: number, data: object) {
-        return (<Image key={pageKey} style={styles.pagerImage} source={data}/>);
+        return (<Image key={pageKey} style={styles.pagerImage} resizeMethod='scale' source={data}/>);
     }
 
     getRenderPageIndicator(props: object) {
@@ -44,7 +44,7 @@ export default class Home extends Component {
                     renderPage={this.getRenderPage}
                     renderPageIndicator={this.getRenderPageIndicator}
                     isLoop={true}
-                    autoPlay={true}
+                    autoPlay={false}
                 />
             </View>);
     }
@@ -54,19 +54,17 @@ export default class Home extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'black'
     },
     viewPager: {
         width: DEVICE_WIDTH,
         height: 300,
-        backgroundColor: 'red'
+        flexDirection: 'column',
     },
     pagerImage: {
         flex: 1,
-        resizeMode: 'stretch'
+        resizeMode: 'cover',
     },
     pagerIndicator: {
-        bottom: 10,
-        backgroundColor: 'blue'
+        bottom: 30,
     }
 });

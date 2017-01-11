@@ -17,14 +17,14 @@ export default class CustomViewPageIndicator extends Component {
     }
 
     static propTypes = {
-        dotSize: PropTypes.number,
-        dotSpace: PropTypes.number,
-        dotColor: PropTypes.string,
-        curDotColor: PropTypes.string,
-        goToPage: PropTypes.func.isRequired,
-        pageCount: PropTypes.number.isRequired,
-        currentPageIndex: PropTypes.number.isRequired,
-        scrollValue: PropTypes.instanceOf(Animated.Value).isRequired,
+        dotSize: React.PropTypes.number,
+        dotSpace: React.PropTypes.number,
+        dotColor: React.PropTypes.string,
+        curDotColor: React.PropTypes.string,
+        goToPage: React.PropTypes.func.isRequired,
+        pageCount: React.PropTypes.number.isRequired,
+        currentPageIndex: React.PropTypes.number.isRequired,
+        scrollValue: React.PropTypes.instanceOf(Animated.Value).isRequired,
     };
 
     static defaultProps = {
