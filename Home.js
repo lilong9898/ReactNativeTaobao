@@ -25,8 +25,8 @@ export default class Home extends Component {
         };
     }
 
-    getRenderPage(pageIndex: number, data: object) {
-        return (<Image key={pageIndex} style={styles.pagerImage} source={data}/>);
+    getRenderPage(pageKey: string, pageIndex: number, data: object) {
+        return (<Image key={pageKey} style={styles.pagerImage} source={data}/>);
     }
 
     getRenderPageIndicator(props: object) {
@@ -44,7 +44,7 @@ export default class Home extends Component {
                     renderPage={this.getRenderPage}
                     renderPageIndicator={this.getRenderPageIndicator}
                     isLoop={true}
-                    autoPlay={false}
+                    autoPlay={true}
                 />
             </View>);
     }

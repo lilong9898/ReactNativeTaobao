@@ -9,10 +9,6 @@ import CustomViewPagerDataSource from './CustomViewPagerDataSource';
 const DEFAULT_SLIDE_INTERVAL_MS = 500;
 const DEFAULT_SLIDE_DIRECTION = 'horizontal';
 
-const KEY_PREV_PAGE = "key_prev_page";
-const KEY_CUR_PAGE = "key_cur_page";
-const KEY_NEXT_PAGE = "key_next_page";
-
 export default class CustomViewPager extends Component {
 
     constructor() {
@@ -95,6 +91,11 @@ export default class CustomViewPager extends Component {
                         return false;
                     }
 
+                    // 在任何模式下，如果只有一页，则不响应手势
+                    if (this.getPageCount() == 1) {
+                        return false;
+                    }
+
                     // 非loop模式下，在首页向右滑，或在末页向左滑，不响应手势
                     if (this.props.isLoop === false) {
                         if (this.getCurrentPageIndex() == 0 && gestureState.dx > 0) {
@@ -167,7 +168,8 @@ export default class CustomViewPager extends Component {
     }
 
     startAutoPlay() {
-        if (!this.autoPlayer) {
+        // 当没有定时器，且页数大于一页时，启动定时滑动
+        if (!this.autoPlayer && this.getPageCount() > 1) {
             // 定时移动一页
             this.autoPlayer = setInterval(
                 () => {
@@ -225,26 +227,34 @@ export default class CustomViewPager extends Component {
         // 要变化到的scrollValue，默认党scrollValueDiff=0时表示不翻页，则不动
         let toScrollValue = 0;
 
-        //跳到序号更大的页
-        if (scrollValueDiff > 0) {
-            // 从首页向右滑动到末页
-            if (this.getCurrentPageIndex() == 0 && jumpToPageIndexRounded == this.getPageCount() - 1) {
-                toScrollValue = 1;
-            }
-            // 从非首页向左滑动到它的后一页
-            else {
-                toScrollValue = -1;
-            }
+        // 如果只有两页，则滑动方向只取决于手势方向，与页位置无关，pageIndexDiff只能取±1
+        if (this.getPageCount() == 2) {
+            toScrollValue = -pageIndexDiff;
         }
-        //跳到序号更小的页
-        else if (scrollValueDiff < 0) {
-            // 从末页向左滑动到首页
-            if (this.getCurrentPageIndex() == this.getPageCount() - 1 && jumpToPageIndexRounded == 0) {
-                toScrollValue = -1;
+        // 如果多于两页，则滑动方向取决于页位置
+        else if (this.getPageCount() > 2) {
+            //跳到序号更大的页
+            if (scrollValueDiff > 0) {
+                // 从首页向右滑动到末页
+                if (this.getCurrentPageIndex() == 0 && jumpToPageIndexRounded == this.getPageCount() - 1) {
+                    toScrollValue = 1;
+                }
+                // 从非首页向左滑动到它的后一页
+                else {
+                    toScrollValue = -1;
+                }
             }
-            // 从非末页向右滑动到它的前一页
-            else {
-                toScrollValue = 1;
+            //跳到序号更小的页
+            else if (scrollValueDiff < 0) {
+                // 如果多于两页，则滑动方向取决于页位置
+                // 从末页向左滑动到首页
+                if (this.getCurrentPageIndex() == this.getPageCount() - 1 && jumpToPageIndexRounded == 0) {
+                    toScrollValue = -1;
+                }
+                // 从非末页向右滑动到它的前一页
+                else {
+                    toScrollValue = 1;
+                }
             }
         }
 
@@ -270,7 +280,7 @@ export default class CustomViewPager extends Component {
                 });
         } else {
             onMovePageFinished();
-            isMoved && this.props.onChangePage && this.props.onChangePage(jumpToPageIndexUnrounded);
+            isMoved && this.props.onChangePage && this.props.onChangePage(jumpToPageIndexRounded);
         }
     }
 
@@ -296,45 +306,75 @@ export default class CustomViewPager extends Component {
         }
     }
 
-    getPage(pageIndex: number) {
-        return this.props.renderPage(pageIndex, this.props.dataSource.getPageData(pageIndex));
+    getPage(pageKey: string, pageIndex: number) {
+        return this.props.renderPage(pageKey, pageIndex, this.props.dataSource.getPageData(pageIndex));
     }
 
     render() {
 
-        if (this.getPageCount() < 0) {
-            return;
+        // 页数小于等于零，不生成任何内容，返回由上级设定style的空容器
+        if (this.getPageCount() <= 0) {
+            return <View style={this.props.style}/>;
         }
 
         if (this.state.viewWidth < 0) {
-            return;
+            return <View style={this.props.style}/>;
         }
 
         // 前面的页
         let prevPage;
-
-        // 前面一页是最后一页
-        if (this.getCurrentPageIndex() == 0) {
-            prevPage = this.getPage(this.getPageCount() - 1);
-        }
-        // 前面一页不是最后一页
-        else {
-            prevPage = this.getPage(this.getCurrentPageIndex() - 1);
-        }
-
-        // 当前页
-        let curPage = this.getPage(this.getCurrentPageIndex());
-
+        // 当前的页
+        let curPage;
         // 后面的页
         let nextPage;
-        // 后面一页是第一页
 
-        if (this.getCurrentPageIndex() == this.getPageCount() - 1) {
-            nextPage = this.getPage(0);
+        // 因为react-native使用key来进行dom-diff中的同一节点的识别，所以相同的节点必须设置相同的key
+        // 如果只有一页，则需要将当前页的内容设置到当前页的前面和后面，同时禁止panResponder响应手势
+        if (this.getPageCount() == 1) {
+            prevPage = this.getPage("0_fake_prev", 0);
+            curPage = this.getPage("0", 0);
+            nextPage = this.getPage("0_fake_next", 0);
         }
-        // 后面一页不是第一页
-        else {
-            nextPage = this.getPage(this.getCurrentPageIndex() + 1);
+        // 如果只有两页，则需要将非当前页的内容设置到当前页的前面和后面
+        else if (this.getPageCount() == 2) {
+            // 如果当前页是第一页
+            if (this.getCurrentPageIndex() == 0) {
+                prevPage = this.getPage("1_fake", 1);
+                curPage = this.getPage("0", 0);
+                nextPage = this.getPage("1", 1);
+            }
+            // 如果当前页是第二页
+            else if (this.getCurrentPageIndex() == 1) {
+                prevPage = this.getPage("0", 0);
+                curPage = this.getPage("1", 1);
+                nextPage = this.getPage("0_fake", 0);
+            }
+        }
+        // 如果多于两页
+        else if (this.getPageCount() > 2) {
+
+            // 前面一页是最后一页
+            if (this.getCurrentPageIndex() == 0) {
+                prevPage = this.getPage(this.getPageCount() - 1, this.getPageCount() - 1);
+            }
+            // 前面一页不是最后一页
+            else {
+                prevPage = this.getPage(this.getCurrentPageIndex() - 1, this.getCurrentPageIndex() - 1);
+            }
+
+            // 当前页
+            curPage = this.getPage(this.getCurrentPageIndex(), this.getCurrentPageIndex());
+
+            // 后面一页是第一页
+
+            if (this.getCurrentPageIndex() == this.getPageCount() - 1) {
+                nextPage = this.getPage(0, 0);
+            }
+            // 后面一页不是第一页
+            else {
+                nextPage = this.getPage(this.getCurrentPageIndex() + 1, this.getCurrentPageIndex() + 1);
+            }
+
         }
 
         // 拼接前面,当前,后面的页,生成3个page组成的组合体来显示,并在其上面平移到正确page
