@@ -1,7 +1,8 @@
 import React, {Component, PropTypes} from 'react';
-import {View, Text, Image, Dimensions, StyleSheet} from 'react-native';
+import {View, Text, Image, Dimensions, StyleSheet, DeviceEventEmitter} from 'react-native';
 import CustomViewPager from './CustomViewPager';
 import CustomViewPageIndicator from './CustomViewPageIndicator';
+import CustomPullToRefreshView from './CustomPullToRefreshView';
 
 const DEVICE_WIDTH = Dimensions.get('window').width;
 
@@ -25,27 +26,45 @@ export default class Home extends Component {
         };
     }
 
-    getRenderPage(pageKey: string, pageIndex: number, data: object) {
+    getViewPagerPage(pageKey: string, pageIndex: number, data: object) {
         return (<Image key={pageKey} style={styles.pagerImage} resizeMethod='scale' source={data}/>);
     }
 
-    getRenderPageIndicator(props: object) {
+    getViewPagerPageIndicator(props: object) {
         return (
             <CustomViewPageIndicator style={styles.pagerIndicator} {...props}/>
         );
     }
 
+    getPullToRefreshViewOnRefresh(tag_notification_refresh_complete: string) {
+        this.dummyLoadingTimer = setTimeout(
+            () => {
+                DeviceEventEmitter.emit(tag_notification_refresh_complete);
+            }, 1000);
+    }
+
+    componentWillUnMount() {
+        if (this.dummyLoadingTimer) {
+            clearTimeout(this.dummyLoadingTimer);
+            this.dummyLoadingTimer = null;
+        }
+    }
+
     render() {
         return (
             <View style={styles.container}>
-                <CustomViewPager
-                    style={styles.viewPager}
-                    dataSource={this.state.dataSource}
-                    renderPage={this.getRenderPage}
-                    renderPageIndicator={this.getRenderPageIndicator}
-                    isLoop={true}
-                    autoPlay={false}
-                />
+                <CustomPullToRefreshView
+                    style={styles.pullToRefreshView}
+                    onRefresh={this.getPullToRefreshViewOnRefresh}>
+                    <CustomViewPager
+                        style={styles.viewPager}
+                        dataSource={this.state.dataSource}
+                        renderPage={this.getViewPagerPage}
+                        renderPageIndicator={this.getViewPagerPageIndicator}
+                        isLoop={true}
+                        autoPlay={false}
+                    />
+                </CustomPullToRefreshView>
             </View>);
     }
 
@@ -55,9 +74,11 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
+    pullToRefreshView: {
+        flex: 1,
+    },
     viewPager: {
-        width: DEVICE_WIDTH,
-        height: 300,
+        height: 200,
         flexDirection: 'column',
     },
     pagerImage: {

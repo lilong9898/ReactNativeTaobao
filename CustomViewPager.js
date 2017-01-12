@@ -54,7 +54,7 @@ export default class CustomViewPager extends Component {
         initialPage: 0,
         slideIntervalMs: DEFAULT_SLIDE_INTERVAL_MS,
         slideDirection: DEFAULT_SLIDE_DIRECTION,
-        // 动画函数，
+        // 松手后自动滑动到位用的动画函数，
         animation: function (animatedValue, toValue) {
             return Animated.spring(animatedValue,
                 {
@@ -122,11 +122,12 @@ export default class CustomViewPager extends Component {
         let onRelease = (e, gestureState) => {
 
             // 根据滑动方向不同，滑动比例和门槛速度的计算方向也不同
-            let effectiveSlideDistance = this.getEffectiveSlideDistance(gestureState);
             let effectiveSlideRatio = this.getEffectiveSlideRatio(gestureState);
             let effectiveSlideVelocity = this.getEffectiveSlideVelocity(gestureState);
 
+            // 要滑动的页数
             let pageIndexDiff = 0;
+
             if (effectiveSlideRatio < -0.5 || (effectiveSlideRatio < 0 && effectiveSlideVelocity <= -1e-2)) {
                 pageIndexDiff = 1;
             } else if (effectiveSlideRatio > 0.5 || (effectiveSlideRatio > 0 && effectiveSlideVelocity >= 1e-2)) {
@@ -136,7 +137,27 @@ export default class CustomViewPager extends Component {
             this.movePage(pageIndexDiff);
         }
 
-        this.panResponder = PanResponder.create({
+        // viewPager容器区域的手势响应，用来拦截全部从内容区域的contentPanResponder冒泡上来的手势，防止它进一步冒泡到viewPager以外的地方去
+        this.containerPanResponder = PanResponder.create({
+
+            // 全部冒泡上来的手势都由我响应
+            onMoveShouldSetPanResponder: (e, gestureState) => {
+                return true;
+            },
+
+            // viewPager在响应手势时，viewPager坐标范围内的手势不允许其他panResponder申请处理
+            // 防止viewPager上的手势冒泡到上级节点上，带动上级节点滑动
+            // [onXXShouldSetPanResponder返回false时，不会检测本方法返回值，直接由上一级处理手势]
+            // [onXXShouldSetPanResponder返回true时，本级处理完手势后会检测该方法返回值，决定是否由上级继续处理]
+            onPanResponderTerminationRequest: (e, gestureState) => {
+                return false;
+            },
+
+        });
+
+        // viewPager内容区域的手势响应，根据其自身的滑动逻辑决定是否处理滑动即可
+        // 如果有手势冒泡到上层，由上层的containerPanResponder来全部拦截，防止其冒泡到viewPager以外的地方去
+        this.contentPanResponder = PanResponder.create({
 
             // 触摸点开始移动时,询问是否响应
             onMoveShouldSetPanResponder: (e, gestureState) => {
@@ -171,24 +192,34 @@ export default class CustomViewPager extends Component {
                     // 其它情况下响应手势
                     return true;
                 }
+                // 如果无效方向上的滑动距离大于有效方向上的，不响应手势
+                else {
+                    return false;
+                }
             },
 
             // 滑动结束,或者responder被其他view夺去,根据上次滑动的距离和速度来跳到最接近的页
             onPanResponderRelease: onRelease,
             onPanResponderTerminate: onRelease,
 
+            // 本responder在响应手势时，不允许其它responder申请处理手势
+            onPanResponderTerminationRequest: (e, gestureState) => {
+                return false;
+            },
+
             // 滑动中,页跟着触摸点移动
             onPanResponderMove: (e, gestureState) => {
 
                 let scrollValue = this.getEffectiveSlideRatio(gestureState);
                 this.state.scrollValue.setValue(scrollValue);
+
             },
         });
 
         // 如果规定了最初的页序号，则跳转到该页
         if (this.props.initialPage) {
             let initialPage = Number(this.props.initialPage);
-            if (initialPage > 0) {
+            if (initialPage >= 0 && initialPage < this.getPageCount()) {
                 this.goToPage(initialPage, false);
             }
         }
@@ -373,6 +404,25 @@ export default class CustomViewPager extends Component {
         return this.props.renderPage(pageKey, pageIndex, this.props.dataSource.getPageData(pageIndex));
     }
 
+    onLayout(event) {
+
+        // 获取view的宽度
+        let viewWidth = event.nativeEvent.layout.width;
+        // 获取view的高度
+        let viewHeight = event.nativeEvent.layout.height;
+
+        // 若view的宽度或高度为空，或者宽高跟原来完全一样
+        if (!viewWidth || !viewHeight || (this.state.viewWidth === viewWidth && this.state.viewHeight === viewHeight)) {
+            return;
+        }
+
+        // 向state中更新最新的view宽度
+        this.setState({
+            viewWidth: viewWidth,
+            viewHeight: viewHeight,
+        });
+    }
+
     render() {
 
         // 页数小于等于零，不生成任何内容，返回由上级设定style的空容器
@@ -454,7 +504,7 @@ export default class CustomViewPager extends Component {
             threePagesCompositionStyle =
                 {
                     width: this.state.viewWidth * 3,
-                    flex : 1,
+                    flex: 1,
                     flexDirection: 'row',
                 };
             transform = this.state.scrollValue.interpolate({
@@ -477,35 +527,15 @@ export default class CustomViewPager extends Component {
 
         return (
             // style由上级提供
-            <View style={this.props.style}
-                  onLayout={(event) => {
-
-            // 获取view的宽度
-            let viewWidth = event.nativeEvent.layout.width;
-            // 获取view的高度
-            let viewHeight = event.nativeEvent.layout.height;
-
-            // 若view的宽度为空或等于之前的宽度
-            if (!viewWidth || this.state.viewWidth === viewWidth) {
-              return;
-            }
-
-            // 若view的高度为空或等于之前的高度
-            if (!viewHeight || this.state.viewHeight === viewHeight) {
-              return;
-            }
-
-            // 向state中更新最新的view宽度
-            this.setState({
-              viewWidth: viewWidth,
-              viewHeight: viewHeight,
-            });
-          }}
+            <View
+                style={this.props.style}
+                onLayout={this.onLayout.bind(this)}
+                {...this.containerPanResponder.panHandlers}
             >
 
                 <Animated.View
                     style={[threePagesCompositionStyle, transformStyle]}
-                    {...this.panResponder.panHandlers}>
+                    {...this.contentPanResponder.panHandlers}>
                     {prevPage}{curPage}{nextPage}
                 </Animated.View>
 
