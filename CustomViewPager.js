@@ -157,7 +157,7 @@ export default class CustomViewPager extends Component {
 
         // viewPager内容区域的手势响应，根据其自身的滑动逻辑决定是否处理滑动即可
         // 如果有手势冒泡到上层，由上层的containerPanResponder来全部拦截，防止其冒泡到viewPager以外的地方去
-        this.contentPanResponder = PanResponder.create({
+        this.panResponder = PanResponder.create({
 
             // 触摸点开始移动时,询问是否响应
             onMoveShouldSetPanResponder: (e, gestureState) => {
@@ -535,7 +535,7 @@ export default class CustomViewPager extends Component {
 
                 <Animated.View
                     style={[threePagesCompositionStyle, transformStyle]}
-                    {...this.contentPanResponder.panHandlers}>
+                    {...this.panResponder.panHandlers}>
                     {prevPage}{curPage}{nextPage}
                 </Animated.View>
 

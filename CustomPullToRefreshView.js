@@ -103,6 +103,10 @@ export default class CustomPullToRefreshView extends Component {
         return this.state.status;
     }
 
+    getScrollValue() {
+        return this.state.scrollValue;
+    }
+
     getEffectiveSlideDistance(gestureState) {
 
         //向下拉且过了下拉触发门限距离
@@ -197,9 +201,13 @@ export default class CustomPullToRefreshView extends Component {
             // 动画结束时新的status
             let newStatusOnAnimEnd;
 
+            // 如果RESET状态松手，说明竖直滑动未过下拉触发门限，不做任何响应
+            if (this.getStatus() == STATUS_RESET) {
+                return;
+            }
             // 如果从PULLING状态松手，则动画移动到RESET位置
             // 状态机：　PULLING -> RESET
-            if (this.getStatus() == STATUS_PULLING) {
+            else if (this.getStatus() == STATUS_PULLING) {
                 toScrollValue = 0;
                 newStatusOnAnimStart = STATUS_PULLING;
                 newStatusOnAnimEnd = STATUS_RESET;
@@ -231,7 +239,7 @@ export default class CustomPullToRefreshView extends Component {
             );
         }
 
-        this.contentPanResponder = PanResponder.create({
+        this.panResponder = PanResponder.create({
             onMoveShouldSetPanResponder: onMoveShouldSetPanResponder,
             onPanResponderMove: onPanResponderMove,
             onPanResponderTerminate: onPanResponderRelease,
@@ -252,9 +260,10 @@ export default class CustomPullToRefreshView extends Component {
     }
 
 
-    getStatusIndicator(getStatus) {
+    getStatusIndicator(getStatus, getScrollValue) {
 
         let status = getStatus();
+        let scrollValue = getScrollValue();
 
         // 如果外界不提供，则用默认的statusIndicator样式
         if (this.props.renderStatusIndicator == null) {
@@ -333,10 +342,10 @@ export default class CustomPullToRefreshView extends Component {
             // 最外层容器的style由上级节点提供
             <View style={this.props.style} onLayout={this.onLayout.bind(this)}>
                 <Animated.View style={[customAnimatedAreaStyle, transformStyle]}
-                    {...this.contentPanResponder.panHandlers}
+                    {...this.panResponder.panHandlers}
                 >
                     <View style={customStatusAreaStyle}>
-                        {this.getStatusIndicator(this.getStatus.bind(this))}
+                        {this.getStatusIndicator(this.getStatus.bind(this), this.getScrollValue.bind(this))}
                     </View>
                     <View style={customContentAreaStyle}>
                         {this.props.children}
