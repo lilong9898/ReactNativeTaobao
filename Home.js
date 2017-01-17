@@ -3,7 +3,7 @@ import {View, Text, Image, Dimensions, StyleSheet, DeviceEventEmitter} from 'rea
 import CustomViewPager from './CustomViewPager';
 import CustomViewPageIndicator from './CustomViewPageIndicator';
 import CustomPullToRefreshView from './CustomPullToRefreshView';
-import CustomPullToRefreshStatusIndicator from './CustomPullToRefreshStatusIndicator';
+import CustomCircularProgressBar from './CustomCircularProgressBar';
 
 const BANNER_IMGS = [
     require('./images/banner/ad_pic_1.jpg'),
@@ -63,7 +63,6 @@ export default class Home extends Component {
                         isLoop={true}
                         autoPlay={false}
                     />
-                    <CustomPullToRefreshStatusIndicator style={{flex:1}}/>
                 </CustomPullToRefreshView>
             </View>);
     }

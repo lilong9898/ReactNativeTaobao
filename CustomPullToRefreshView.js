@@ -8,9 +8,10 @@ import {
     Animated,
     Easing,
     Dimensions,
-    ActivityIndicator,
     DeviceEventEmitter,
 } from 'react-native';
+
+import CustomCircularProgressBar from './CustomCircularProgressBar';
 
 // pull to refresh的状态机
 // 原始状态
@@ -27,7 +28,7 @@ const STATUS_RELEASED_DURING_REFRESH = 'status_released_during_refresh';
 // 默认的status area的高度
 const DEFAULT_STATUS_AREA_HEIGHT = 200;
 // 默认的PULLING_HOLD的状态时控件的偏移距离的门槛值
-const DEFAULT_PULLING_HOLD_TRANSLATE_Y = 100;
+const DEFAULT_PULLING_HOLD_TRANSLATE_Y = 75;
 // 默认的RELEASED_DURING_REFRESH的状态时控件的偏移距离
 const DEFAULT_RELEASED_DURING_REFRESH_TRANSLATE_Y = 50;
 // 默认的下拉响应最小滑动距离，避免过度灵敏时误触导致滑动
@@ -43,6 +44,7 @@ export default class CustomPullToRefreshView extends Component {
     constructor(props) {
         super(props);
 
+
         this.state = {
             // 纵向滑动动画的驱动量，值为纵向滑动距离占viewHeight的比例
             // 0为statusArea刚好隐藏在屏幕上边时的滑动值，也是默认状态的值
@@ -53,8 +55,10 @@ export default class CustomPullToRefreshView extends Component {
             viewWidth: 0,
             // CustomPullToRefreshView的高度
             viewHeight: 0,
-        };
+        }
+        ;
 
+        this.THRESHOLD_PULLINGHOLD = this.props.pullingHoldTranslateY / this.props.statusAreaHeight;
     }
 
     static propTypes = {
@@ -162,8 +166,6 @@ export default class CustomPullToRefreshView extends Component {
             }
         };
 
-        let THRESHOLD_PULLINGHOLD = this.props.pullingHoldTranslateY / this.props.statusAreaHeight;
-
         let onPanResponderMove = (e, gestureState) => {
 
             let effectiveSlideRatio = this.getEffectiveSlideRatio(gestureState);
@@ -177,7 +179,7 @@ export default class CustomPullToRefreshView extends Component {
             let newStatus;
 
             // 未到pulling hold状态
-            if (effectiveSlideRatio < THRESHOLD_PULLINGHOLD) {
+            if (effectiveSlideRatio < this.THRESHOLD_PULLINGHOLD) {
                 newStatus = STATUS_PULLING;
             }
             // 已到pulling hold状态
@@ -187,9 +189,11 @@ export default class CustomPullToRefreshView extends Component {
 
             this.state.scrollValue.setValue(effectiveSlideRatio);
 
-            this.setState({
-                status: newStatus,
-            });
+            if (this.getStatus() != newStatus) {
+                this.setState({
+                    status: newStatus,
+                });
+            }
         };
 
         let onPanResponderRelease = (e, gestureState) => {
@@ -215,7 +219,7 @@ export default class CustomPullToRefreshView extends Component {
             // 如果从PULLING_HOLD状态松手，则动画移动到PULLING_HOLD位置
             // 状态机: PULLING_HOLD -> RELEASED_TO_REFRESH -> RELEASED_DURING_REFRESH
             else if (this.getStatus() == STATUS_PULLING_HOLD) {
-                toScrollValue = THRESHOLD_PULLINGHOLD;
+                toScrollValue = this.THRESHOLD_PULLINGHOLD;
                 newStatusOnAnimStart = STATUS_RELEASED_TO_REFRESH;
                 newStatusOnAnimEnd = STATUS_RELEASED_DURING_REFRESH;
             }
@@ -282,14 +286,18 @@ export default class CustomPullToRefreshView extends Component {
             return (
                 <View
                     style={{backgroundColor : 'red', height : 50, flexDirection : 'row', justifyContent : 'center', alignItems : 'center'}}>
-                    <ActivityIndicator size='small'/>
+                    <CustomCircularProgressBar
+                        style={styles.circularProgressBar}
+                        circleRadius={10}
+                        scrollValue={this.state.scrollValue}
+                        thresholdPullingHold={this.THRESHOLD_PULLINGHOLD}/>
                     <Text style={{marginLeft : 10}}>{statusTextString}</Text>
                 </View>
             );
         }
         // 如果外部提供了status indicator样式
         else {
-            return this.props.renderStatusIndicator(getStatus);
+            return this.props.renderStatusIndicator(getStatus, getScrollValue);
         }
     }
 
@@ -355,4 +363,10 @@ export default class CustomPullToRefreshView extends Component {
     }
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+    circularProgressBar: {
+        width: 40,
+        height: 40,
+        backgroundColor: 'blue'
+    }
+});
