@@ -12,11 +12,13 @@ export default class CustomViewPageIndicator extends Component {
         super(props);
 
         this.state = {
+            viewPagerWidth: 0,
             viewWidth: 0,
         };
     }
 
     static propTypes = {
+        viewPagerWidth: React.PropTypes.number.isRequired,
         dotSize: React.PropTypes.number,
         dotSpace: React.PropTypes.number,
         dotColor: React.PropTypes.string,
@@ -47,10 +49,35 @@ export default class CustomViewPageIndicator extends Component {
 
         return (
             <TouchableWithoutFeedback style={styles.tab} key={'indicator_' + pageIndex}
-                              onPress={()=> this.props.goToPage(pageIndex, false)}>
+                                      onPress={()=> this.props.goToPage(pageIndex, false)}>
                 <View style={[styles.dot, customDotStyle]}/>
             </TouchableWithoutFeedback>
         );
+    }
+
+    componentWillReceiveProps(nextProps) {
+
+        if(nextProps.viewPagerWidth == this.state.viewPagerWidth){
+            return;
+        }
+
+        this.setState({
+            viewPagerWidth: nextProps.viewPagerWidth,
+        });
+    }
+
+    onLayout(event) {
+
+        let viewWidth = event.nativeEvent.layout.width;
+
+        if (!viewWidth || this.state.viewWidth === viewWidth) {
+            return;
+        }
+
+        this.setState({
+            viewWidth: viewWidth,
+        });
+
     }
 
     render() {
@@ -111,18 +138,13 @@ export default class CustomViewPageIndicator extends Component {
 
         return (
             // style由本级和上级共同提供
-            <View style={[styles.tabs, this.props.style]}
-                  onLayout={(event) => {
-             viewWidth = event.nativeEvent.layout.width;
-            if (!viewWidth || this.state.viewWidth === viewWidth) {
-              return;
-            }
-            this.setState({
-              viewWidth: viewWidth,
-            });
-          }}>
+            <View
+                style={[this.props.style, styles.container, {width: this.state.viewPagerWidth}]}
+                onLayout={this.onLayout.bind(this)}>
                 {indicators}
-                <Animated.View style={[styles.curDot, {left : left}, customCurDotStyle]}/>
+                <Animated.View
+                    style={[styles.curDot, {left : left}, customCurDotStyle]}
+                />
             </View>
         );
     }
@@ -134,7 +156,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
 
-    tabs: {
+    container: {
+        position: 'absolute',
+        bottom: 10,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',

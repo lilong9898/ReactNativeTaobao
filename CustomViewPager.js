@@ -540,6 +540,7 @@ export default class CustomViewPager extends Component {
                 </Animated.View>
 
                 {this.renderPageIndicator({
+                    viewPagerWidth: this.state.viewWidth,
                     goToPage: this.goToPage.bind(this),
                     pageCount: this.getPageCount(),
                     currentPageIndex: this.state.currentPageIndex,

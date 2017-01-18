@@ -3,15 +3,8 @@ import {View, Text, Image, Dimensions, StyleSheet, DeviceEventEmitter} from 'rea
 import CustomViewPager from './CustomViewPager';
 import CustomViewPageIndicator from './CustomViewPageIndicator';
 import CustomPullToRefreshView from './CustomPullToRefreshView';
-import CustomCircularProgressBar from './CustomCircularProgressBar';
-
-const BANNER_IMGS = [
-    require('./images/banner/ad_pic_1.jpg'),
-    require('./images/banner/ad_pic_2.jpg'),
-    require('./images/banner/ad_pic_3.jpg'),
-    require('./images/banner/ad_pic_4.jpg'),
-    require('./images/banner/ad_pic_5.jpg'),
-];
+import CustomFuctionButtonGroup from './CustomFunctionButtonGroup';
+import BANNERS from './BannersDataArray';
 
 export default class Home extends Component {
 
@@ -21,12 +14,12 @@ export default class Home extends Component {
             pageHasChanged: (p1, p2) => p1 !== p2,
         });
         this.state = {
-            dataSource: dataSource.cloneWithPages(BANNER_IMGS)
+            dataSource: dataSource.cloneWithPages(BANNERS)
         };
     }
 
     getViewPagerPage(pageKey: string, pageIndex: number, data: object) {
-        return (<Image key={pageKey} style={styles.pagerImage} resizeMethod='scale' source={data}/>);
+        return (<Image key={pageKey} style={{flex:1, resizeMode: 'cover'}} resizeMethod='scale' source={data}/>);
     }
 
     getViewPagerPageIndicator(props: object) {
@@ -63,6 +56,9 @@ export default class Home extends Component {
                         isLoop={true}
                         autoPlay={false}
                     />
+                    <CustomFuctionButtonGroup
+                        style={styles.functionButtonGroup}
+                    />
                 </CustomPullToRefreshView>
             </View>);
     }
@@ -78,13 +74,8 @@ const styles = StyleSheet.create({
     },
     viewPager: {
         height: 200,
-        flexDirection: 'column',
     },
-    pagerImage: {
-        flex: 1,
-        resizeMode: 'cover',
+    functionButtonGroup: {
+        height: 180,
     },
-    pagerIndicator: {
-        bottom: 30,
-    }
 });
