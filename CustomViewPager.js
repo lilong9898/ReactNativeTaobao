@@ -59,8 +59,8 @@ export default class CustomViewPager extends Component {
             return Animated.spring(animatedValue,
                 {
                     toValue: toValue,
+                    tension: 50,
                     friction: 10,
-                    tension: 100,
                 })
         },
     }
@@ -401,7 +401,7 @@ export default class CustomViewPager extends Component {
     }
 
     getPage(pageKey: string, pageIndex: number) {
-        return this.props.renderPage(pageKey, pageIndex, this.props.dataSource.getPageData(pageIndex));
+        return this.props.renderPage(pageKey, pageIndex, this.props.dataSource.getPageData(pageIndex), this.state.viewWidth, this.state.viewHeight);
     }
 
     onLayout(event) {

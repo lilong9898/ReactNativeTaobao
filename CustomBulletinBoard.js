@@ -45,10 +45,10 @@ export default class CustomBulletinBoard extends Component {
         });
     }
 
-    getViewPagerPage(pageKey: string, pageIndex: number, data: object) {
+    getViewPagerPage(pageKey: string, pageIndex: number, data: object, viewPagerWidth: number, viewPagerHeight: number) {
 
         let typeStyle = {
-            width: Math.min(Math.max(this.state.viewWidth * 0.1, 40), 200),
+            width: Math.min(Math.max(viewPagerWidth * 0.2, 40), 200),
         };
 
         let textStyle = {

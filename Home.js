@@ -9,6 +9,8 @@ import CustomBulletinBoard from './CustomBulletinBoard';
 // 首页轮播广告的图片
 import BANNERS from './BannersDataArray';
 
+const SCREEN_WIDTH = Dimensions.get('window').width;
+
 export default class Home extends Component {
 
     constructor(props) {
@@ -21,8 +23,9 @@ export default class Home extends Component {
         };
     }
 
-    getViewPagerPage(pageKey: string, pageIndex: number, data: object) {
-        return (<Image key={pageKey} style={{flex:1, resizeMode: 'cover'}} resizeMethod='scale' source={data}/>);
+    getViewPagerPage(pageKey: string, pageIndex: number, data: object, viewPagerWidth: number, viewPagerHeight: number) {
+        return (<Image key={pageKey} style={{width: viewPagerWidth, height: viewPagerHeight, resizeMode: 'cover'}}
+                       resizeMethod='scale' source={data}/>);
     }
 
     getViewPagerPageIndicator(props: object) {
@@ -80,7 +83,8 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     viewPager: {
-        height: 200,
+        width: SCREEN_WIDTH,
+        height: SCREEN_WIDTH * 0.5,
     },
     functionButtonGroup: {
         height: 180,
