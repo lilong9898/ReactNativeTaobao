@@ -60,7 +60,7 @@ export default class CustomViewPager extends Component {
                 {
                     toValue: toValue,
                     friction: 10,
-                    tension: 50,
+                    tension: 100,
                 })
         },
     }

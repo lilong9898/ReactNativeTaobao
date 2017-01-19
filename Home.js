@@ -4,6 +4,9 @@ import CustomViewPager from './CustomViewPager';
 import CustomViewPageIndicator from './CustomViewPageIndicator';
 import CustomPullToRefreshView from './CustomPullToRefreshView';
 import CustomFuctionButtonGroup from './CustomFunctionButtonGroup';
+import CustomBulletinBoard from './CustomBulletinBoard';
+
+// 首页轮播广告的图片
 import BANNERS from './BannersDataArray';
 
 export default class Home extends Component {
@@ -54,10 +57,14 @@ export default class Home extends Component {
                         renderPage={this.getViewPagerPage}
                         renderPageIndicator={this.getViewPagerPageIndicator}
                         isLoop={true}
-                        autoPlay={false}
+                        autoPlay={true}
+                        slideIntervalMs={1000}
                     />
                     <CustomFuctionButtonGroup
                         style={styles.functionButtonGroup}
+                    />
+                    <CustomBulletinBoard
+                        style={styles.bulletinBoard}
                     />
                 </CustomPullToRefreshView>
             </View>);
@@ -77,5 +84,9 @@ const styles = StyleSheet.create({
     },
     functionButtonGroup: {
         height: 180,
+    },
+    bulletinBoard: {
+        height: 60,
+        backgroundColor: 'yellow',
     },
 });

@@ -57,7 +57,7 @@ export default class CustomFunctionButton extends Component {
 
     render() {
 
-        let iconDimension = Math.min(this.state.viewWidth * 0.8, this.state.viewHeight * 0.8);
+        let iconDimension = Math.min(this.state.viewWidth * 0.7, this.state.viewHeight * 0.7);
 
         let iconStyle = {
             width: iconDimension,
