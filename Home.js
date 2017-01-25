@@ -1,15 +1,24 @@
 import React, {Component, PropTypes} from 'react';
-import {View, Text, Image, Dimensions, StyleSheet, DeviceEventEmitter} from 'react-native';
+import {
+    View,
+    Text,
+    Image,
+    Dimensions,
+    StyleSheet,
+    DeviceEventEmitter
+} from 'react-native';
 import CustomViewPager from './CustomViewPager';
 import CustomViewPageIndicator from './CustomViewPageIndicator';
-import CustomPullToRefreshView from './CustomPullToRefreshView';
 import CustomFuctionButtonGroup from './CustomFunctionButtonGroup';
 import CustomBulletinBoard from './CustomBulletinBoard';
+
+import RCTPullToRefreshScrollView from './RCTPullToRefreshScrollView';
 
 // 首页轮播广告的图片
 import BANNERS from './BannersDataArray';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
+const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 export default class Home extends Component {
 
@@ -24,8 +33,10 @@ export default class Home extends Component {
     }
 
     getViewPagerPage(pageKey: string, pageIndex: number, data: object, viewPagerWidth: number, viewPagerHeight: number) {
-        return (<Image key={pageKey} style={{width: viewPagerWidth, height: viewPagerHeight, resizeMode: 'cover'}}
-                       resizeMethod='scale' source={data}/>);
+        return (<Image key={pageKey}
+                       style={{width: viewPagerWidth, height: viewPagerHeight, resizeMode: 'cover'}}
+                       resizeMethod='scale'
+                       source={data}/>);
     }
 
     getViewPagerPageIndicator(props: object) {
@@ -50,10 +61,12 @@ export default class Home extends Component {
 
     render() {
         return (
-            <View style={styles.container}>
-                <CustomPullToRefreshView
-                    style={styles.pullToRefreshView}
-                    onRefresh={this.getPullToRefreshViewOnRefresh}>
+            <RCTPullToRefreshScrollView
+                style={styles.pullToRefreshView}
+            >
+                <View
+                    style={styles.contentContainer}
+                    collapsable={false}>
                     <CustomViewPager
                         style={styles.viewPager}
                         dataSource={this.state.dataSource}
@@ -69,18 +82,20 @@ export default class Home extends Component {
                     <CustomBulletinBoard
                         style={styles.bulletinBoard}
                     />
-                </CustomPullToRefreshView>
-            </View>);
+                </View>
+            </RCTPullToRefreshScrollView>
+        );
     }
 
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
     pullToRefreshView: {
         flex: 1,
+        height: SCREEN_HEIGHT,
+    },
+    contentContainer: {
+        height: SCREEN_HEIGHT * 2,
     },
     viewPager: {
         width: SCREEN_WIDTH,

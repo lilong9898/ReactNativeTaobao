@@ -74,6 +74,7 @@ export default class CustomFunctionButton extends Component {
                     <Image
                         style={[styles.icon, iconStyle]}
                         source={this.props.icon}
+                        resizeMode='stretch'
                     />
 
                     <Text

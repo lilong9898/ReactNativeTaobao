@@ -8,6 +8,7 @@ import {
     Animated,
     Easing,
     Dimensions,
+    ScrollView,
     DeviceEventEmitter,
 } from 'react-native';
 
@@ -32,7 +33,7 @@ const DEFAULT_PULLING_HOLD_TRANSLATE_Y = 75;
 // 默认的RELEASED_DURING_REFRESH的状态时控件的偏移距离
 const DEFAULT_RELEASED_DURING_REFRESH_TRANSLATE_Y = 50;
 // 默认的下拉响应最小滑动距离，避免过度灵敏时误触导致滑动
-const DEFAULT_MIN_PULL_RESPONSE_DISTANCE = 30;
+const DEFAULT_MIN_PULL_RESPONSE_DISTANCE = 0;
 // 默认的status area的背景颜色
 const DEFAULT_STATUS_AREA_BACKGROUND_COLOR = 'green';
 
@@ -44,6 +45,8 @@ export default class CustomPullToRefreshView extends Component {
     constructor(props) {
         super(props);
 
+        // scrollView的因滚动导致的偏移量
+        this.scrollY = 0;
 
         this.state = {
             // 纵向滑动动画的驱动量，值为纵向滑动距离占viewHeight的比例
@@ -55,6 +58,7 @@ export default class CustomPullToRefreshView extends Component {
             viewWidth: 0,
             // CustomPullToRefreshView的高度
             viewHeight: 0,
+            scrollEnabled: true,
         }
         ;
 
@@ -159,7 +163,9 @@ export default class CustomPullToRefreshView extends Component {
         let onMoveShouldSetPanResponder = (e, gestureState) => {
 
             // 只有从RESET状态开始的滑动，才响应后续手势
-            if (this.getStatus() == STATUS_RESET) {
+            if (this.scrollY == 0
+                && this.getStatus() == STATUS_RESET
+                && gestureState.dy > 0) {
                 return true;
             } else {
                 return false;
@@ -170,11 +176,13 @@ export default class CustomPullToRefreshView extends Component {
 
             let effectiveSlideRatio = this.getEffectiveSlideRatio(gestureState);
 
+            console.log('4');
             // 竖直方向上没有移动或向下移动太少，导致有效距离为零，忽略，不跟随移动
             if (effectiveSlideRatio == 0) {
                 return;
             }
 
+            console.log('3');
             //因滑动而迁移到的新的状态
             let newStatus;
 
@@ -243,13 +251,29 @@ export default class CustomPullToRefreshView extends Component {
             );
         }
 
-        this.panResponder = PanResponder.create({
-            onMoveShouldSetPanResponder: onMoveShouldSetPanResponder,
+        this.pullToRefreshPanResponder = PanResponder.create({
+            // onMoveShouldSetPanResponderCapture: onMoveShouldSetPanResponder,
+            onMoveShouldSetPanResponderCapture: (e, gestureState) => {
+                return true;
+            },
             onPanResponderMove: onPanResponderMove,
             onPanResponderTerminate: onPanResponderRelease,
             onPanResponderRelease: onPanResponderRelease,
+            onPanResponderTerminationRequest: (e, gestureState) => {
+                false
+            },
         })
         ;
+
+        this.scrollViewContainerPanResponder = PanResponder.create({
+
+            onMoveShouldSetPanResponder: (e, gestureState) => {
+                return this.scrollY > 0;
+            },
+            onPanResponderTerminationRequest: (e, gestureState) => {
+                return !(this.scrollY > 0);
+            },
+        });
     }
 
     componentDidMount() {
@@ -263,6 +287,17 @@ export default class CustomPullToRefreshView extends Component {
         this.subscription && this.subscription.remove();
     }
 
+    enableScroll() {
+        this.setState({
+            scrollEnabled: true,
+        });
+    }
+
+    disableScroll() {
+        this.setState({
+            scrollEnabled: false,
+        });
+    }
 
     getStatusIndicator(getStatus, getScrollValue) {
 
@@ -320,6 +355,14 @@ export default class CustomPullToRefreshView extends Component {
         });
     }
 
+    onScroll(event) {
+        this.scrollY = event.nativeEvent.contentOffset.y;
+        // if (this.scrollY == 0) {
+        //     this.disableScroll();
+        // }
+    }
+
+
     render() {
 
         let customStatusAreaStyle = {
@@ -348,16 +391,20 @@ export default class CustomPullToRefreshView extends Component {
 
         return (
             // 最外层容器的style由上级节点提供
-            <View style={this.props.style} onLayout={this.onLayout.bind(this)}>
+            <View style={this.props.style}
+                  onLayout={this.onLayout.bind(this)}>
                 <Animated.View style={[customAnimatedAreaStyle, transformStyle]}
-                    {...this.panResponder.panHandlers}
                 >
                     <View style={customStatusAreaStyle}>
                         {this.getStatusIndicator(this.getStatus.bind(this), this.getScrollValue.bind(this))}
                     </View>
-                    <View style={customContentAreaStyle}>
+                    <ScrollView
+                        style={customContentAreaStyle}
+                        onScroll={this.onScroll.bind(this)}
+                        {...this.pullToRefreshPanResponder.panHandlers}
+                    >
                         {this.props.children}
-                    </View>
+                    </ScrollView>
                 </Animated.View>
             </View>);
     }
