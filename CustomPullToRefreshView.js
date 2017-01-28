@@ -283,7 +283,7 @@ export default class CustomPullToRefreshView extends Component {
         });
     }
 
-    componentWillUnMount() {
+    componentWillUnmount() {
         this.subscription && this.subscription.remove();
     }
 

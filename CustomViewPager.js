@@ -254,7 +254,7 @@ export default class CustomViewPager extends Component {
 
     }
 
-    componentWillUnMount() {
+    componentWillUnmount() {
         if (this.autoPlayer) {
             clearInterval(this.autoPlayer);
             this.autoPlayer = null;

@@ -156,17 +156,14 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     img: {
-        backgroundColor: 'red'
     },
     divider: {
         backgroundColor: 'gray',
     },
     viewPager: {
-        backgroundColor: 'white',
     },
     viewPagerPage: {
         flex: 1,
-        backgroundColor: 'orange'
     },
     viewPagerPageType: {
         textAlign: 'center',

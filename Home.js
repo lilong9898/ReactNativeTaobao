@@ -11,11 +11,19 @@ import CustomViewPager from './CustomViewPager';
 import CustomViewPageIndicator from './CustomViewPageIndicator';
 import CustomFuctionButtonGroup from './CustomFunctionButtonGroup';
 import CustomBulletinBoard from './CustomBulletinBoard';
+import CustomHighlightProductGroup from './CustomHighlightProductGroup';
+import CustomProductGroup from './CustomProductGroup';
+import CustomAreaDivider from './CustomAreaDivider';
 
-import RCTPullToRefreshScrollView from './RCTPullToRefreshScrollView';
+import PullToRefreshScrollView from './PullToRefreshScrollView';
 
 // 首页轮播广告的图片
 import BANNERS from './BannersDataArray';
+
+// 导入全局UI设置
+import GLOBAL_UI_SETTING from './GlobalUISetting';
+// 导入商品信息
+import PRODUCT_DATA from './ProductData';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -30,6 +38,7 @@ export default class Home extends Component {
         this.state = {
             dataSource: dataSource.cloneWithPages(BANNERS)
         };
+
     }
 
     getViewPagerPage(pageKey: string, pageIndex: number, data: object, viewPagerWidth: number, viewPagerHeight: number) {
@@ -40,8 +49,13 @@ export default class Home extends Component {
     }
 
     getViewPagerPageIndicator(props: object) {
+        let pageInidcatorProps = {
+            dotSize: 6,
+            dotSpace: 6,
+        };
+
         return (
-            <CustomViewPageIndicator style={styles.pagerIndicator} {...props}/>
+            <CustomViewPageIndicator {...pageInidcatorProps} {...props}/>
         );
     }
 
@@ -52,7 +66,7 @@ export default class Home extends Component {
             }, 1000);
     }
 
-    componentWillUnMount() {
+    componentWillUnmount() {
         if (this.dummyLoadingTimer) {
             clearTimeout(this.dummyLoadingTimer);
             this.dummyLoadingTimer = null;
@@ -61,7 +75,7 @@ export default class Home extends Component {
 
     render() {
         return (
-            <RCTPullToRefreshScrollView
+            <PullToRefreshScrollView
                 style={styles.pullToRefreshView}
             >
                 <View
@@ -82,8 +96,28 @@ export default class Home extends Component {
                     <CustomBulletinBoard
                         style={styles.bulletinBoard}
                     />
+                    <CustomHighlightProductGroup
+                        style={styles.highlightProduct}
+                    />
+                    <CustomAreaDivider/>
+                    <CustomProductGroup
+                        style={styles.product}
+                        title={PRODUCT_DATA.NORMAL_PRODUCT_GROUPS[0].title}
+                        icon={PRODUCT_DATA.NORMAL_PRODUCT_GROUPS[0].icon}
+                        more={PRODUCT_DATA.NORMAL_PRODUCT_GROUPS[0].more}
+                        products={PRODUCT_DATA.NORMAL_PRODUCT_GROUPS[0].products}
+                    />
+                    <CustomAreaDivider/>
+                    <CustomProductGroup
+                        style={styles.product}
+                        title={PRODUCT_DATA.NORMAL_PRODUCT_GROUPS[1].title}
+                        icon={PRODUCT_DATA.NORMAL_PRODUCT_GROUPS[1].icon}
+                        more={PRODUCT_DATA.NORMAL_PRODUCT_GROUPS[1].more}
+                        products={PRODUCT_DATA.NORMAL_PRODUCT_GROUPS[1].products}
+                    />
+                    <CustomAreaDivider/>
                 </View>
-            </RCTPullToRefreshScrollView>
+            </PullToRefreshScrollView>
         );
     }
 
@@ -95,7 +129,8 @@ const styles = StyleSheet.create({
         height: SCREEN_HEIGHT,
     },
     contentContainer: {
-        height: SCREEN_HEIGHT * 2,
+        height: SCREEN_HEIGHT * 2.5,
+        backgroundColor: GLOBAL_UI_SETTING.BACKGROUND_COLOR,
     },
     viewPager: {
         width: SCREEN_WIDTH,
@@ -106,6 +141,7 @@ const styles = StyleSheet.create({
     },
     bulletinBoard: {
         height: 60,
-        backgroundColor: 'yellow',
     },
+    highlightProduct: {},
+    product: {},
 });
