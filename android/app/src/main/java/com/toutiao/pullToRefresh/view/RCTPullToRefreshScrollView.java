@@ -81,8 +81,9 @@ public class RCTPullToRefreshScrollView extends LinearLayout {
      */
     private boolean mFilterTouchEventsByDirectionDiffComparison = true;
 
+    private OnLoadingLayoutScrollPositionChangeListener mOnLoadingLayoutScrollPositionChangeListener;
+    private OnPullToRefreshStateChangeListener mOnPullToRefreshStateChangeListener;
     private OnRefreshListener mOnRefreshListener;
-    private OnPullStateChangeListener mOnPullStateChangeListener;
 
     private Interpolator mScrollAnimationInterpolator;
 
@@ -417,8 +418,8 @@ public class RCTPullToRefreshScrollView extends LinearLayout {
 
         mState = state;
 
-        if (null != mOnPullStateChangeListener) {
-            mOnPullStateChangeListener.onPullStateChange(this, mState);
+        if (null != mOnPullToRefreshStateChangeListener) {
+            mOnPullToRefreshStateChangeListener.onPullToRefreshStateChange(this, mState);
         }
 
         if (DEBUG) {
@@ -473,32 +474,36 @@ public class RCTPullToRefreshScrollView extends LinearLayout {
 
         if (newScrollValue != 0 && !isRefreshing()) {
 
-            float scale = Math.abs(newScrollValue) / (float) minDraggedDistanceToRefreshPx;
-
-            //TODO
-
             if (mState != State.PULL_TO_REFRESH && minDraggedDistanceToRefreshPx >= Math.abs(newScrollValue)) {
                 setState(State.PULL_TO_REFRESH);
             } else if (mState == State.PULL_TO_REFRESH && minDraggedDistanceToRefreshPx < Math.abs(newScrollValue)) {
                 setState(State.RELEASE_TO_REFRESH);
             }
+
         }
     }
 
     /**
      * 根据新的滚动值，将本控件滚动到合适的位置，制造{@link RCTPullToRefreshLoadingLayout}的显示和隐藏效果
      */
-    private final void scrollTheWholeViewImpl(int value) {
+    private final void scrollTheWholeViewImpl(int newScrollValue) {
 
         if (DEBUG) {
-            Log.d(LOG_TAG, "scrollTheWholeViewImpl: " + value);
+            Log.d(LOG_TAG, "scrollTheWholeViewImpl: " + newScrollValue);
         }
 
         // 滑动位置要在[0, maximumPullScroll]之间
         final int maximumPullScroll = getMaximumPullScroll();
-        value = Math.min(0, Math.max(-maximumPullScroll, value));
+        newScrollValue = Math.min(0, Math.max(-maximumPullScroll, newScrollValue));
 
-        scrollTo(0, value);
+        scrollTo(0, newScrollValue);
+
+        float loadingLayoutScrollPositionRatio = Math.abs(newScrollValue) / (float) getMinDraggedDistanceToRefreshPx();
+
+        // 通知外界本控件被拖动的距离
+        if (mOnLoadingLayoutScrollPositionChangeListener != null) {
+            mOnLoadingLayoutScrollPositionChangeListener.onLoadingLayoutScrollPositionChange(this, loadingLayoutScrollPositionRatio);
+        }
     }
 
     /**
@@ -633,20 +638,38 @@ public class RCTPullToRefreshScrollView extends LinearLayout {
         void onSmoothScrollFinished();
     }
 
+    public void setOnLoadingLayoutScrollPositionChangeListener(OnLoadingLayoutScrollPositionChangeListener l) {
+        mOnLoadingLayoutScrollPositionChangeListener = l;
+    }
+
+    public void setOnPullToRefreshStateChangeListener(OnPullToRefreshStateChangeListener l) {
+        mOnPullToRefreshStateChangeListener = l;
+    }
+
     public void setOnRefreshListener(OnRefreshListener l) {
         mOnRefreshListener = l;
     }
 
-    public void setOnPullStateChangeListener(OnPullStateChangeListener l) {
-        mOnPullStateChangeListener = l;
+    /**
+     * {@link RCTPullToRefreshLoadingLayout}的滑动位置改变时，通过该回调通知外界
+     */
+    public interface OnLoadingLayoutScrollPositionChangeListener {
+        /**
+         * @param loadingLayoutScrollPositionRatio 等于{@link RCTPullToRefreshLoadingLayout}的滑动的距离与{@value MIN_DRAGGED_DISTANCE_TO_REFRESH_PX}的比值
+         *                                         表示本控件滑动程度相对于要松手后刷新的要求，达到的百分比
+         *                                         <strong>可以大于1</strong>
+         *                                         <strong>滑动的距离，可以是由于拖动导致，也可以是由自动滚动导致</strong>
+         *                                         <strong>{@link RCTPullToRefreshLoadingLayout}隐藏时{@link #mScrollView}的滑动不会触发该回调，因为不属于下拉刷新状态</strong>
+         */
+        void onLoadingLayoutScrollPositionChange(final RCTPullToRefreshScrollView v, float loadingLayoutScrollPositionRatio);
     }
 
     /**
      * 当用户拖动控件，使得其状态改变时，通过该回调通知外界
      * 状态详见{@link State}
      */
-    public interface OnPullStateChangeListener {
-        void onPullStateChange(final RCTPullToRefreshScrollView v, State state);
+    public interface OnPullToRefreshStateChangeListener {
+        void onPullToRefreshStateChange(final RCTPullToRefreshScrollView v, State state);
     }
 
     /**

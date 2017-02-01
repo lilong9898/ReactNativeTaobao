@@ -42,11 +42,12 @@ export default class Home extends Component {
 
     }
 
-    getLoadingLayout(pullToRefreshState: string) {
+    getLoadingLayout(pullToRefreshState: string, loadingLayoutScrollPositionRatio: number) {
         return (
             <PullToRefreshLoadingLayout
                 style={{height: 50}}
                 pullToRefreshState={pullToRefreshState}
+                loadingLayoutScrollPositionRatio={loadingLayoutScrollPositionRatio}
             />
         );
     }

@@ -3,15 +3,11 @@ import {
     View, Text, ScrollView, Dimensions, StyleSheet, requireNativeComponent,
 } from 'react-native';
 
-import PullToRefreshLoadingLayout from './PullToRefreshLoadingLayout';
-
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 import PULL_TO_REFRESH_STATE from './PullToRefreshState';
 const STATE_RESET = PULL_TO_REFRESH_STATE.STATE_RESET;
-// const DEFAULT_LOADING_LAYOUT_HEIGHT = 50;
-// const DEFAULT_LOADING_LAYOUT_CONTENT_HEIGHT = 25;
 
 export default class PullToRefreshScrollView extends Component {
 
@@ -21,7 +17,8 @@ export default class PullToRefreshScrollView extends Component {
         this.state = {
             viewWidth: 0,
             viewHeight: 0,
-            pullToRefreshState: STATE_RESET
+            pullToRefreshState: STATE_RESET,
+            loadingLayoutScrollPositionRatio: 0,
         }
     }
 
@@ -49,14 +46,23 @@ export default class PullToRefreshScrollView extends Component {
         });
     }
 
-    onPullStateChange(event) {
+    onPullToRefreshStateChange(event) {
 
-        if (event.nativeEvent && event.nativeEvent.state != this.state.pullToRefreshState) {
+        if (event.nativeEvent && event.nativeEvent.pullToRefreshState != this.state.pullToRefreshState) {
             this.setState({
-                pullToRefreshState: event.nativeEvent.state,
+                pullToRefreshState: event.nativeEvent.pullToRefreshState,
             });
         }
 
+    }
+
+    onLoadingLayoutScrollPositionRatioChange(event) {
+
+        if (event.nativeEvent && event.nativeEvent.loadingLayoutScrollPositionRatio != this.state.loadingLayoutScrollPositionRatio) {
+            this.setState({
+                loadingLayoutScrollPositionRatio: event.nativeEvent.loadingLayoutScrollPositionRatio,
+            });
+        }
     }
 
     render() {
@@ -66,14 +72,15 @@ export default class PullToRefreshScrollView extends Component {
                 collapsable={false}
                 style={[this.props.style, {backgroundColor: 'yellow'}]}
                 onLayout={this.onLayout.bind(this)}
-                onPullStateChange={this.onPullStateChange.bind(this)}
+                onPullToRefreshStateChange={this.onPullToRefreshStateChange.bind(this)}
+                onLoadingLayoutScrollPositionChange={this.onLoadingLayoutScrollPositionRatioChange.bind(this)}
             >
                 <View
                     collapsable={false}
                     style={{flex:1}}
                 >
                     {
-                        this.props.renderLoadingLayout(this.state.pullToRefreshState)
+                        this.props.renderLoadingLayout(this.state.pullToRefreshState, this.state.loadingLayoutScrollPositionRatio)
                     }
                     <ScrollView
                         style={{height: this.state.viewHeight, backgroundColor: 'cyan'}}

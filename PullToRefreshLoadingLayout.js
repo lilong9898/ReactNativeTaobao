@@ -21,22 +21,32 @@ export default class PullToRefreshLoadingLayout extends Component {
             viewWidth: 0,
             viewHeight: 0,
             pullToRefreshState: STATE_RESET,
+            loadingLayoutScrollPositionRatio: 0,
         }
     }
 
     static propTypes = {
         pullToRefreshState: React.PropTypes.string.isRequired,
+        loadingLayoutScrollPositionRatio: React.PropTypes.number.isRequired,
     };
 
     static defaultProps = {
         pullToRefreshState: STATE_RESET,
+        loadingLayoutScrollPositionRatio: 0,
     };
 
     componentWillReceiveProps(nextProps) {
 
-        if (nextProps && nextProps.pullToRefreshState != this.props.pullToRefreshState) {
+        if (nextProps
+            &&
+            (
+                nextProps.pullToRefreshState != this.props.pullToRefreshState
+                || nextProps.loadingLayoutScrollPositionRatio != this.props.loadingLayoutScrollPositionRatio
+            )
+        ) {
             this.setState({
                 pullToRefreshState: nextProps.pullToRefreshState,
+                loadingLayoutScrollPositionRatio: nextProps.loadingLayoutScrollPositionRatio,
             });
         }
 
@@ -94,6 +104,11 @@ export default class PullToRefreshLoadingLayout extends Component {
                     style={[{height:25}, styles.contentArea]}
                 >
                     <Text
+                        style={[styles.scrollRatioText]}
+                    >
+                        {this.state.loadingLayoutScrollPositionRatio.toFixed(2)}
+                    </Text>
+                    <Text
                         style={[styles.statusText]}
                         numberOfLines={1}
                     >
@@ -112,7 +127,10 @@ const styles = {
     },
     contentArea: {
         backgroundColor: 'green',
+        flexDirection: 'row',
+        justifyContent: 'center',
     },
+    scrollRatioText: {},
     statusText: {
         textAlign: 'center',
         textAlignVertical: 'center',
