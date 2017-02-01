@@ -77,6 +77,7 @@ export default class Home extends Component {
         return (
             <PullToRefreshScrollView
                 style={styles.pullToRefreshView}
+                collapsable={false}
             >
                 <View
                     style={styles.contentContainer}
@@ -125,10 +126,12 @@ export default class Home extends Component {
 
 const styles = StyleSheet.create({
     pullToRefreshView: {
-        flex: 1,
+        // flex: 1,
+        width: SCREEN_WIDTH,
         height: SCREEN_HEIGHT,
     },
     contentContainer: {
+        width: SCREEN_WIDTH,
         height: SCREEN_HEIGHT * 2.5,
         backgroundColor: GLOBAL_UI_SETTING.BACKGROUND_COLOR,
     },

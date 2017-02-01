@@ -1,5 +1,12 @@
 import React, {Component, PropTypes} from 'react';
-import {View, Text, Image, Dimensions, StyleSheet} from 'react-native';
+import {
+    View,
+    Text,
+    Image,
+    ListView,
+    Dimensions,
+    StyleSheet
+} from 'react-native';
 
 import GLOBAL_UI_SETTING from './GlobalUISetting';
 
