@@ -16,6 +16,7 @@ import CustomProductGroup from './CustomProductGroup';
 import CustomAreaDivider from './CustomAreaDivider';
 
 import PullToRefreshScrollView from './PullToRefreshScrollView';
+import PullToRefreshLoadingLayout from './PullToRefreshLoadingLayout';
 
 // 首页轮播广告的图片
 import BANNERS from './BannersDataArray';
@@ -39,6 +40,15 @@ export default class Home extends Component {
             dataSource: dataSource.cloneWithPages(BANNERS)
         };
 
+    }
+
+    getLoadingLayout(pullToRefreshState: string) {
+        return (
+            <PullToRefreshLoadingLayout
+                style={{height: 50}}
+                pullToRefreshState={pullToRefreshState}
+            />
+        );
     }
 
     getViewPagerPage(pageKey: string, pageIndex: number, data: object, viewPagerWidth: number, viewPagerHeight: number) {
@@ -77,7 +87,8 @@ export default class Home extends Component {
         return (
             <PullToRefreshScrollView
                 style={styles.pullToRefreshView}
-                collapsable={false}
+                minDraggedDistanceToRefresh={50}
+                renderLoadingLayout={this.getLoadingLayout}
             >
                 <View
                     style={styles.contentContainer}

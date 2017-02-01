@@ -4,6 +4,7 @@ import com.facebook.react.common.MapBuilder;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.UIManagerModule;
 import com.facebook.react.uimanager.ViewGroupManager;
+import com.facebook.react.uimanager.annotations.ReactProp;
 import com.toutiao.pullToRefresh.event.PullStateChangeEvent;
 import com.toutiao.pullToRefresh.view.RCTPullToRefreshScrollView;
 
@@ -17,18 +18,28 @@ import javax.annotation.Nullable;
 
 public class RCTPullToRefreshScrollViewManager extends ViewGroupManager<RCTPullToRefreshScrollView> {
 
+    private ThemedReactContext context;
     private static final String NAME = "RCTPullToRefreshScrollView";
     private static final String CUSTOM_DIRECT_EVENT_TYPE_CONSTANTS_FIELD_REGISTRATION_NAME = "registrationName";
     private static final String JS_CALLBACK_NAME_PULL_STATE_CHANGE = "onPullStateChange";
 
     @Override
     protected RCTPullToRefreshScrollView createViewInstance(ThemedReactContext reactContext) {
+        context = reactContext;
         return new RCTPullToRefreshScrollView(reactContext);
     }
 
     @Override
     public String getName() {
         return NAME;
+    }
+
+    /**
+     * 注意js端传来的prop数值单位是dp，而java层需要的是px
+     */
+    @ReactProp(name = "minDraggedDistanceToRefresh")
+    public void setMinDraggedDistanceToRefresh(RCTPullToRefreshScrollView v, int distanceDp) {
+        v.setMinDraggedDistanceToRefreshDp(distanceDp);
     }
 
     @Override

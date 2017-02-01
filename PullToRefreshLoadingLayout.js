@@ -25,7 +25,7 @@ export default class PullToRefreshLoadingLayout extends Component {
     }
 
     static propTypes = {
-        pullToRefreshState: React.PropTypes.string,
+        pullToRefreshState: React.PropTypes.string.isRequired,
     };
 
     static defaultProps = {
@@ -80,7 +80,6 @@ export default class PullToRefreshLoadingLayout extends Component {
                 break;
         }
 
-        console.log(text);
         return text;
     }
 
@@ -124,7 +123,9 @@ const NATIVE_MODULE_REGISTERED_NAME = "RCTPullToRefreshLoadingLayout";
 
 let iface = {
     name: NATIVE_MODULE_REGISTERED_NAME,
-    propTypes: {...View.propTypes},
+    propTypes: {
+        ...View.propTypes,
+    },
 }
 
 const RCTPullToRefreshLoadingLayout = requireNativeComponent(NATIVE_MODULE_REGISTERED_NAME, iface);

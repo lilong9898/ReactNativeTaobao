@@ -10,6 +10,8 @@ const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 import PULL_TO_REFRESH_STATE from './PullToRefreshState';
 const STATE_RESET = PULL_TO_REFRESH_STATE.STATE_RESET;
+// const DEFAULT_LOADING_LAYOUT_HEIGHT = 50;
+// const DEFAULT_LOADING_LAYOUT_CONTENT_HEIGHT = 25;
 
 export default class PullToRefreshScrollView extends Component {
 
@@ -22,6 +24,11 @@ export default class PullToRefreshScrollView extends Component {
             pullToRefreshState: STATE_RESET
         }
     }
+
+    static propTypes = {
+        minDraggedDistanceToRefresh: React.PropTypes.number.isRequired,
+        renderLoadingLayout: React.PropTypes.func.isRequired,
+    };
 
     onLayout(event) {
 
@@ -56,6 +63,7 @@ export default class PullToRefreshScrollView extends Component {
         return (
             <RCTPullToRefreshScrollView
                 {...this.props}
+                collapsable={false}
                 style={[this.props.style, {backgroundColor: 'yellow'}]}
                 onLayout={this.onLayout.bind(this)}
                 onPullStateChange={this.onPullStateChange.bind(this)}
@@ -64,11 +72,9 @@ export default class PullToRefreshScrollView extends Component {
                     collapsable={false}
                     style={{flex:1}}
                 >
-                    <PullToRefreshLoadingLayout
-                        style={{height: 50}}
-                        pullToRefreshState={this.state.pullToRefreshState}
-                    >
-                    </PullToRefreshLoadingLayout>
+                    {
+                        this.props.renderLoadingLayout(this.state.pullToRefreshState)
+                    }
                     <ScrollView
                         style={{height: this.state.viewHeight, backgroundColor: 'cyan'}}
                     >
@@ -84,7 +90,10 @@ const NATIVE_MODULE_REGISTERED_NAME = "RCTPullToRefreshScrollView";
 
 let iface = {
     name: NATIVE_MODULE_REGISTERED_NAME,
-    propTypes: {...View.propTypes},
+    propTypes: {
+        minDraggedDistanceToRefresh: React.PropTypes.number,
+        ...View.propTypes,
+    },
 }
 
 const RCTPullToRefreshScrollView = requireNativeComponent(NATIVE_MODULE_REGISTERED_NAME, iface);

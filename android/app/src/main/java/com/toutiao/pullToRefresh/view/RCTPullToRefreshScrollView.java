@@ -41,8 +41,14 @@ public class RCTPullToRefreshScrollView extends LinearLayout {
     /**
      * 下拉拉出{@link RCTPullToRefreshLoadingLayout}时，滑动的距离时拉出距离的{@value #FRICTION}倍
      */
-    static final float FRICTION = 2.0f;
-
+    public static final float FRICTION = 2.0f;
+    /**
+     * 从{@link State#RESET}开始拉动到即将进入{@link State#RELEASE_TO_REFRESH}时,
+     * 本控件被拉动的距离, 即被拉动多少后放手才有可能进入刷新
+     * <strong>是本控件被拉动的距离，不是手势经过的距离，两者有{@value FRICTION}倍的比例</strong>
+     * 单位是像素
+     */
+    public static int MIN_DRAGGED_DISTANCE_TO_REFRESH_PX = 0;
 
     /**
      * 系统需要手势移动多少像素，才认为时开始scroll
@@ -265,9 +271,19 @@ public class RCTPullToRefreshScrollView extends LinearLayout {
         return false;
     }
 
-    // TODO
-    private int getLoadingLayoutContentHeight() {
-        return mLoadingLayout.getHeight() / 2;
+    /**
+     * {@value MIN_DRAGGED_DISTANCE_TO_REFRESH_PX}
+     */
+    private int getMinDraggedDistanceToRefreshPx() {
+        return MIN_DRAGGED_DISTANCE_TO_REFRESH_PX;
+    }
+
+    /**
+     * {@link com.toutiao.pullToRefresh.viewManager.RCTPullToRefreshScrollViewManager#setMinDraggedDistanceToRefresh(RCTPullToRefreshScrollView, int)}
+     */
+    public void setMinDraggedDistanceToRefreshDp(int distanceDp) {
+        float density = getResources().getDisplayMetrics().density;
+        MIN_DRAGGED_DISTANCE_TO_REFRESH_PX = (int) (distanceDp * density);
     }
 
     /**
@@ -360,7 +376,7 @@ public class RCTPullToRefreshScrollView extends LinearLayout {
                     }
                 };
 
-                smoothScrollTo(-getLoadingLayoutContentHeight(), listener);
+                smoothScrollTo(-getMinDraggedDistanceToRefreshPx(), listener);
             }
             /**
              * {@link RCTPullToRefreshLoadingLayout}全部缩回去
@@ -444,26 +460,26 @@ public class RCTPullToRefreshScrollView extends LinearLayout {
     private void scrollTheWholeView() {
 
         final int newScrollValue;
-        final int itemDimension;
+        final int minDraggedDistanceToRefreshPx;
         final float initialMotionValue, lastMotionValue;
 
         initialMotionValue = mInitialMotionY;
         lastMotionValue = mLastMotionY;
 
         newScrollValue = Math.round(Math.min(initialMotionValue - lastMotionValue, 0) / FRICTION);
-        itemDimension = getLoadingLayoutContentHeight();
+        minDraggedDistanceToRefreshPx = getMinDraggedDistanceToRefreshPx();
 
         scrollTheWholeViewImpl(newScrollValue);
 
         if (newScrollValue != 0 && !isRefreshing()) {
 
-            float scale = Math.abs(newScrollValue) / (float) itemDimension;
+            float scale = Math.abs(newScrollValue) / (float) minDraggedDistanceToRefreshPx;
 
             //TODO
 
-            if (mState != State.PULL_TO_REFRESH && itemDimension >= Math.abs(newScrollValue)) {
+            if (mState != State.PULL_TO_REFRESH && minDraggedDistanceToRefreshPx >= Math.abs(newScrollValue)) {
                 setState(State.PULL_TO_REFRESH);
-            } else if (mState == State.PULL_TO_REFRESH && itemDimension < Math.abs(newScrollValue)) {
+            } else if (mState == State.PULL_TO_REFRESH && minDraggedDistanceToRefreshPx < Math.abs(newScrollValue)) {
                 setState(State.RELEASE_TO_REFRESH);
             }
         }
