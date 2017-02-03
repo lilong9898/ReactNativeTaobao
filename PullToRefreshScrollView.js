@@ -23,6 +23,8 @@ export default class PullToRefreshScrollView extends Component {
     }
 
     static propTypes = {
+        height: React.PropTypes.number.isRequired,
+        loadingLayoutHeight: React.PropTypes.number.isRequired,
         minDraggedDistanceToRefresh: React.PropTypes.number.isRequired,
         renderLoadingLayout: React.PropTypes.func.isRequired,
     };
@@ -66,11 +68,18 @@ export default class PullToRefreshScrollView extends Component {
     }
 
     render() {
+
+        // 考虑到为了隐藏loadingLayout需要用负的padding，则本控件的高度要比屏幕高度大,
+        // 这样当loadingLayout隐藏了的时候scrollView刚好占满全屏，否则scrollView高度会不足
+        let heightStyle = {
+            height: this.props.height + this.props.loadingLayoutHeight,
+        };
+
         return (
             <RCTPullToRefreshScrollView
                 {...this.props}
                 collapsable={false}
-                style={[this.props.style, {backgroundColor: 'yellow'}]}
+                style={[this.props.style, heightStyle, {backgroundColor: 'yellow'}]}
                 onLayout={this.onLayout.bind(this)}
                 onPullToRefreshStateChange={this.onPullToRefreshStateChange.bind(this)}
                 onLoadingLayoutScrollPositionChange={this.onLoadingLayoutScrollPositionRatioChange.bind(this)}
@@ -80,10 +89,10 @@ export default class PullToRefreshScrollView extends Component {
                     style={{flex:1}}
                 >
                     {
-                        this.props.renderLoadingLayout(this.state.pullToRefreshState, this.state.loadingLayoutScrollPositionRatio)
+                        this.props.renderLoadingLayout(this.props.loadingLayoutHeight, this.state.pullToRefreshState, this.state.loadingLayoutScrollPositionRatio)
                     }
                     <ScrollView
-                        style={{height: this.state.viewHeight, backgroundColor: 'cyan'}}
+                        style={{height: this.props.height, backgroundColor: 'cyan'}}
                     >
                         {this.props.children}
                     </ScrollView>

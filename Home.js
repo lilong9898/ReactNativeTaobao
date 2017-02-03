@@ -42,10 +42,14 @@ export default class Home extends Component {
 
     }
 
-    getLoadingLayout(pullToRefreshState: string, loadingLayoutScrollPositionRatio: number) {
+    static propTypes = {
+        height: React.PropTypes.number.isRequired,
+    };
+
+    getLoadingLayout(loadingLayoutHeight: number, pullToRefreshState: string, loadingLayoutScrollPositionRatio: number) {
         return (
             <PullToRefreshLoadingLayout
-                style={{height: 50}}
+                style={{height: loadingLayoutHeight}}
                 pullToRefreshState={pullToRefreshState}
                 loadingLayoutScrollPositionRatio={loadingLayoutScrollPositionRatio}
             />
@@ -87,6 +91,8 @@ export default class Home extends Component {
     render() {
         return (
             <PullToRefreshScrollView
+                height={this.props.height}
+                loadingLayoutHeight={300}
                 style={styles.pullToRefreshView}
                 minDraggedDistanceToRefresh={50}
                 renderLoadingLayout={this.getLoadingLayout}
