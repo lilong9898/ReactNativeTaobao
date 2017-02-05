@@ -10,6 +10,7 @@
     "react": "15.4.1",
     "react-native": "0.39.2",
     "react-native-pull": "^1.1.3",
+    "react-native-svg": "^5.1.5",
     "react-native-tab-navigator": "^0.3.3",
     "react-native-viewpager": "^0.2.13"
   },

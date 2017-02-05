@@ -12,7 +12,8 @@ const STATE_REFRESHING = PULL_TO_REFRESH_STATE.STATE_REFRESHING;
 const STATE_MANUAL_REFRESHING = PULL_TO_REFRESH_STATE.STATE_MANUAL_REFRESHING;
 const STATE_OVERSCROLLING = PULL_TO_REFRESH_STATE.STATE_OVERSCROLLING;
 
-import CircularProgressBar from './CustomCircularProgressBar';
+import CircularProgressBarART from './CircularProgressBarART';
+import CircularProgressBarSvg from './CircularProgressBarSvg';
 
 export default class PullToRefreshLoadingLayout extends Component {
 
@@ -109,7 +110,8 @@ export default class PullToRefreshLoadingLayout extends Component {
                 <View
                     style={[{height:this.props.minDraggedDistanceToRefresh}, styles.contentArea]}
                 >
-                    <CircularProgressBar
+                    <CircularProgressBarSvg/>
+                    <CircularProgressBarART
                         style={styles.circleProgress}
                         circleRadius={10}
                         circleColor='gray'

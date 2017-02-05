@@ -20,7 +20,7 @@ const DEFAULT_CIRCLE_SPAN_DIRECTION = CIRCLE_SPAN_DIRECTION_COUNTERCLOCKWISE;
 const path = new ART.Path();
 
 // 圆圈形进度条
-export default class CustomCircularProgressBar extends Component {
+export default class CircularProgressBarART extends Component {
 
     constructor(props) {
         super(props);
