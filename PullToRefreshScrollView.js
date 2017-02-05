@@ -79,7 +79,7 @@ export default class PullToRefreshScrollView extends Component {
             <RCTPullToRefreshScrollView
                 {...this.props}
                 collapsable={false}
-                style={[this.props.style, heightStyle, {backgroundColor: 'yellow'}]}
+                style={[this.props.style, heightStyle, ]}
                 onLayout={this.onLayout.bind(this)}
                 onPullToRefreshStateChange={this.onPullToRefreshStateChange.bind(this)}
                 onLoadingLayoutScrollPositionChange={this.onLoadingLayoutScrollPositionRatioChange.bind(this)}
@@ -89,10 +89,10 @@ export default class PullToRefreshScrollView extends Component {
                     style={{flex:1}}
                 >
                     {
-                        this.props.renderLoadingLayout(this.props.loadingLayoutHeight, this.state.pullToRefreshState, this.state.loadingLayoutScrollPositionRatio)
+                        this.props.renderLoadingLayout(this.props.loadingLayoutHeight, this.props.minDraggedDistanceToRefresh, this.state.pullToRefreshState, this.state.loadingLayoutScrollPositionRatio)
                     }
                     <ScrollView
-                        style={{height: this.props.height, backgroundColor: 'cyan'}}
+                        style={{height: this.props.height}}
                     >
                         {this.props.children}
                     </ScrollView>

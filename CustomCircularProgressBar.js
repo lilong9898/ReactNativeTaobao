@@ -34,36 +34,7 @@ export default class CustomCircularProgressBar extends Component {
 
     }
 
-    componentDidMount() {
-
-        if (this.props.scrollValue == null) {
-            return;
-        }
-
-        // 给scrollValue加监听器,以便外界可以用异步方式监听它的值(文档中表示无法以同步方式直接读取)
-        this.scrollValueNumberListener = this.props.scrollValue.addListener(
-            (state) => {
-
-                let progress = Math.max(0, Math.min(state.value / this.props.thresholdPullingHold, 1));
-                let circleSpanRadian = 2 * Math.PI * progress;
-
-                if (this.state.circleSpanRadian != circleSpanRadian)
-                    this.setState({
-                        circleSpanRadian: circleSpanRadian,
-                    });
-            }
-        );
-    }
-
-    componentWillMount() {
-        this.props.scrollValue && this.props.scrollValue.removeListener(this.scrollValueNumberListener);
-    }
-
     static propTypes = {
-        // 从pullToRefreshView输入的scrollValue
-        scrollValue: React.PropTypes.instanceOf(Animated.Value),
-        // 从pullToRefreshView输入的进入PULLING_HOLD状态的滑动门限
-        thresholdPullingHold: React.PropTypes.number,
         // 圆弧半径
         circleRadius: React.PropTypes.number.isRequired,
         // 圆弧圆心相对控件左上角的x位置，不指定的话设置为控件中心
@@ -92,7 +63,9 @@ export default class CustomCircularProgressBar extends Component {
 
     componentWillReceiveProps(nextProps) {
 
+        console.log("haha " + nextProps.circleSpanRadian);
         if (this.state.circleSpanRadian != nextProps.circleSpanRadian) {
+            console.log(nextProps.circleSpanRadian);
             this.setState({
                 circleSpanRadian: nextProps.circleSpanRadian,
             });
@@ -128,8 +101,8 @@ export default class CustomCircularProgressBar extends Component {
 
         // 起始角度
         let startRadianPos = this.props.circleStartRadianPos;
-        //　延续角度, 如果没有输入scrollValue, 则用props中的
-        let spanRadian = (this.props.scrollValue == null) ? this.props.circleSpanRadian : this.state.circleSpanRadian;
+        //　延续角度
+        let spanRadian = this.state.circleSpanRadian;
         // 计算和画弧的方向
         let spanDirection = this.props.circleSpanDirection;
         // 半径
@@ -167,9 +140,13 @@ export default class CustomCircularProgressBar extends Component {
         path.moveTo(arcStartX, arcStartY).arcTo(arcEndX, arcEndY, radius, radius, isBigArc, isCounterClockwise, true);
 
         return (
-            <View style={this.props.style} onLayout={this.onLayout.bind(this)}>
-                <ART.Surface width={this.state.viewWidth} height={this.state.viewHeight}>
-                    <ART.Shape d={path} stroke={this.props.circleColor} strokeWidth={this.props.circleStrokeWidth}/>
+            <View style={this.props.style}
+                  onLayout={this.onLayout.bind(this)}>
+                <ART.Surface width={this.state.viewWidth}
+                             height={this.state.viewHeight}>
+                    <ART.Shape d={path}
+                               stroke={this.props.circleColor}
+                               strokeWidth={this.props.circleStrokeWidth}/>
                 </ART.Surface>
             </View>
         );

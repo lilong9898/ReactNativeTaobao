@@ -12,6 +12,8 @@ const STATE_REFRESHING = PULL_TO_REFRESH_STATE.STATE_REFRESHING;
 const STATE_MANUAL_REFRESHING = PULL_TO_REFRESH_STATE.STATE_MANUAL_REFRESHING;
 const STATE_OVERSCROLLING = PULL_TO_REFRESH_STATE.STATE_OVERSCROLLING;
 
+import CircularProgressBar from './CustomCircularProgressBar';
+
 export default class PullToRefreshLoadingLayout extends Component {
 
     constructor(props) {
@@ -26,6 +28,7 @@ export default class PullToRefreshLoadingLayout extends Component {
     }
 
     static propTypes = {
+        minDraggedDistanceToRefresh: React.PropTypes.number.isRequired,
         pullToRefreshState: React.PropTypes.string.isRequired,
         loadingLayoutScrollPositionRatio: React.PropTypes.number.isRequired,
     };
@@ -94,6 +97,9 @@ export default class PullToRefreshLoadingLayout extends Component {
     }
 
     render() {
+
+        let circleSpanRadian = 2 * Math.PI * Math.min(1, Math.max(0, this.state.loadingLayoutScrollPositionRatio));
+
         return (
             <RCTPullToRefreshLoadingLayout
                 {...this.props}
@@ -101,13 +107,14 @@ export default class PullToRefreshLoadingLayout extends Component {
                 onLayout={this.onLayout.bind(this)}
             >
                 <View
-                    style={[{height:25}, styles.contentArea]}
+                    style={[{height:this.props.minDraggedDistanceToRefresh}, styles.contentArea]}
                 >
-                    <Text
-                        style={[styles.scrollRatioText]}
-                    >
-                        {this.state.loadingLayoutScrollPositionRatio.toFixed(2)}
-                    </Text>
+                    <CircularProgressBar
+                        style={styles.circleProgress}
+                        circleRadius={10}
+                        circleColor='gray'
+                        circleSpanRadian={circleSpanRadian}
+                    />
                     <Text
                         style={[styles.statusText]}
                         numberOfLines={1}
@@ -122,18 +129,27 @@ export default class PullToRefreshLoadingLayout extends Component {
 
 const styles = {
     container: {
-        backgroundColor: 'blue',
         justifyContent: 'flex-end',
     },
     contentArea: {
-        backgroundColor: 'green',
         flexDirection: 'row',
         justifyContent: 'center',
+        alignItems: 'flex-end',
+        marginBottom: 10,
     },
-    scrollRatioText: {},
+    circleProgress: {
+        width: 25,
+        height: 25,
+        marginRight: 10,
+    },
+    scrollRatioText: {
+        textAlign: 'center',
+        textAlignVertical: 'center',
+    },
     statusText: {
         textAlign: 'center',
         textAlignVertical: 'center',
+        fontSize: 15,
     },
 };
 
