@@ -1,6 +1,13 @@
 import React, {Component, PropTypes} from 'react';
 import {
-    View, Text, ScrollView, Dimensions, StyleSheet, requireNativeComponent,
+    View,
+    Text,
+    ScrollView,
+    Dimensions,
+    StyleSheet,
+    requireNativeComponent,
+    findNodeHandle,
+    DeviceEventEmitter,
 } from 'react-native';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -8,6 +15,11 @@ const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 import PULL_TO_REFRESH_STATE from './PullToRefreshState';
 const STATE_RESET = PULL_TO_REFRESH_STATE.STATE_RESET;
+
+const UIManager = require('UIManager');
+const COMMAND_ID_REFRESH_COMPLETE = 1;
+const REF_KEY = "ref_key_RCTPullToRefreshScrollView";
+const DEVICE_EVENT_TYPE_NOTIFY_REFRESH_COMPLETE = "notify_refresh_complete";
 
 export default class PullToRefreshScrollView extends Component {
 
@@ -20,6 +32,7 @@ export default class PullToRefreshScrollView extends Component {
             pullToRefreshState: STATE_RESET,
             loadingLayoutScrollPositionRatio: 0,
         }
+
     }
 
     static propTypes = {
@@ -27,7 +40,24 @@ export default class PullToRefreshScrollView extends Component {
         loadingLayoutHeight: React.PropTypes.number.isRequired,
         minDraggedDistanceToRefresh: React.PropTypes.number.isRequired,
         renderLoadingLayout: React.PropTypes.func.isRequired,
+        onRefreshStart: React.PropTypes.func.isRequired,
     };
+
+    componentDidMount() {
+        this.deviceEventEmitterListener = DeviceEventEmitter.addListener(DEVICE_EVENT_TYPE_NOTIFY_REFRESH_COMPLETE, () => {
+            this.notifyNativeViewRefreshComplete();
+        })
+    }
+
+    componentWillUnmount() {
+        this.deviceEventEmitterListener && this.deviceEventEmitterListener.remove();
+    }
+
+    notifyNativeViewRefreshComplete() {
+        UIManager.dispatchViewManagerCommand(
+            findNodeHandle(this.refRCTPullToRefreshScrollView), COMMAND_ID_REFRESH_COMPLETE, null
+        );
+    }
 
     onLayout(event) {
 
@@ -79,10 +109,12 @@ export default class PullToRefreshScrollView extends Component {
             <RCTPullToRefreshScrollView
                 {...this.props}
                 collapsable={false}
-                style={[this.props.style, heightStyle, ]}
+                ref={(ref)=>{this.refRCTPullToRefreshScrollView = ref}}
+                style={[this.props.style, heightStyle,]}
                 onLayout={this.onLayout.bind(this)}
                 onPullToRefreshStateChange={this.onPullToRefreshStateChange.bind(this)}
                 onLoadingLayoutScrollPositionChange={this.onLoadingLayoutScrollPositionRatioChange.bind(this)}
+                onRefreshStart={this.props.onRefreshStart.bind(this)}
             >
                 <View
                     collapsable={false}

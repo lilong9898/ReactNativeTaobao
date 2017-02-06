@@ -1,5 +1,6 @@
 package com.toutiao.pullToRefresh.viewManager;
 
+import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.common.MapBuilder;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.UIManagerModule;
@@ -7,6 +8,7 @@ import com.facebook.react.uimanager.ViewGroupManager;
 import com.facebook.react.uimanager.annotations.ReactProp;
 import com.facebook.react.uimanager.events.EventDispatcher;
 import com.toutiao.pullToRefresh.event.LoadingLayoutScrollPositionChangeEvent;
+import com.toutiao.pullToRefresh.event.OnRefreshStartEvent;
 import com.toutiao.pullToRefresh.event.PullToRefreshStateChangeEvent;
 import com.toutiao.pullToRefresh.view.RCTPullToRefreshScrollView;
 
@@ -24,9 +26,13 @@ public class RCTPullToRefreshScrollViewManager extends ViewGroupManager<RCTPullT
     private EventDispatcher mEventDispatcher;
 
     private static final String NAME = "RCTPullToRefreshScrollView";
+
     private static final String CUSTOM_DIRECT_EVENT_TYPE_CONSTANTS_FIELD_REGISTRATION_NAME = "registrationName";
     private static final String JS_CALLBACK_NAME_PULL_TO_REFRESH_STATE_CHANGE = "onPullToRefreshStateChange";
     private static final String JS_CALLBACK_NAME_LOADING_LAYOUT_SCROLL_POSITION_CHANGE = "onLoadingLayoutScrollPositionChange";
+    private static final String JS_CALLBACK_NAME_ON_REFRESH_START = "onRefreshStart";
+
+    private static final int COMMAND_ID_REFRESH_COMPLETE = 1;
 
     @Override
     protected RCTPullToRefreshScrollView createViewInstance(ThemedReactContext reactContext) {
@@ -81,6 +87,18 @@ public class RCTPullToRefreshScrollViewManager extends ViewGroupManager<RCTPullT
                 mEventDispatcher.dispatchEvent(event);
             }
         });
+
+        /**
+         * {@link com.toutiao.pullToRefresh.view.RCTPullToRefreshScrollView.OnRefreshListener}
+         * 向js端发送刷新开始的消息
+         * */
+        view.setOnRefreshListener(new RCTPullToRefreshScrollView.OnRefreshListener() {
+            @Override
+            public void onRefresh(RCTPullToRefreshScrollView v) {
+                OnRefreshStartEvent event = new OnRefreshStartEvent(v.getId());
+                mEventDispatcher.dispatchEvent(event);
+            }
+        });
     }
 
     @Nullable
@@ -89,9 +107,29 @@ public class RCTPullToRefreshScrollViewManager extends ViewGroupManager<RCTPullT
 
         Map pullToRefreshStateChangeEventFieldMap = MapBuilder.of(CUSTOM_DIRECT_EVENT_TYPE_CONSTANTS_FIELD_REGISTRATION_NAME, JS_CALLBACK_NAME_PULL_TO_REFRESH_STATE_CHANGE);
         Map loadingLayoutScrollPositionChangeEventFieldMap = MapBuilder.of(CUSTOM_DIRECT_EVENT_TYPE_CONSTANTS_FIELD_REGISTRATION_NAME, JS_CALLBACK_NAME_LOADING_LAYOUT_SCROLL_POSITION_CHANGE);
+        Map onRefreshStartEventFieldMap = MapBuilder.of(CUSTOM_DIRECT_EVENT_TYPE_CONSTANTS_FIELD_REGISTRATION_NAME, JS_CALLBACK_NAME_ON_REFRESH_START);
 
-        Map eventsToFieldsMap = MapBuilder.of(PullToRefreshStateChangeEvent.EVENT_NAME, pullToRefreshStateChangeEventFieldMap, LoadingLayoutScrollPositionChangeEvent.EVENT_NAME, loadingLayoutScrollPositionChangeEventFieldMap);
+        Map eventsToFieldsMap = MapBuilder.of(PullToRefreshStateChangeEvent.EVENT_NAME, pullToRefreshStateChangeEventFieldMap, LoadingLayoutScrollPositionChangeEvent.EVENT_NAME, loadingLayoutScrollPositionChangeEventFieldMap, OnRefreshStartEvent.EVENT_NAME, onRefreshStartEventFieldMap);
         return eventsToFieldsMap;
+    }
+
+    @Nullable
+    @Override
+    public Map<String, Integer> getCommandsMap() {
+        return MapBuilder.of("notifyRefreshComplete", COMMAND_ID_REFRESH_COMPLETE);
+    }
+
+    @Override
+    public void receiveCommand(RCTPullToRefreshScrollView root, int commandId, @Nullable ReadableArray args) {
+
+        switch (commandId) {
+            case COMMAND_ID_REFRESH_COMPLETE:
+                root.notifyRefreshComplete();
+                break;
+            default:
+                break;
+        }
+
     }
 
     /**

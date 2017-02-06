@@ -29,6 +29,8 @@ import PRODUCT_DATA from './ProductData';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
+const DEVICE_EVENT_TYPE_NOTIFY_REFRESH_COMPLETE = "notify_refresh_complete";
+
 export default class Home extends Component {
 
     constructor(props) {
@@ -75,10 +77,10 @@ export default class Home extends Component {
         );
     }
 
-    getPullToRefreshViewOnRefresh(tag_notification_refresh_complete: string) {
+    pullToRefreshViewOnRefresh() {
         this.dummyLoadingTimer = setTimeout(
             () => {
-                DeviceEventEmitter.emit(tag_notification_refresh_complete);
+                DeviceEventEmitter.emit(DEVICE_EVENT_TYPE_NOTIFY_REFRESH_COMPLETE);
             }, 1000);
     }
 
@@ -97,6 +99,7 @@ export default class Home extends Component {
                 style={styles.pullToRefreshView}
                 minDraggedDistanceToRefresh={75}
                 renderLoadingLayout={this.getLoadingLayout}
+                onRefreshStart={this.pullToRefreshViewOnRefresh}
             >
                 <View
                     style={styles.contentContainer}
