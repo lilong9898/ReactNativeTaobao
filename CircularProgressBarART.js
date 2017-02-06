@@ -63,7 +63,6 @@ export default class CircularProgressBarART extends Component {
 
     componentWillReceiveProps(nextProps) {
 
-        console.log("haha " + nextProps.circleSpanRadian);
         if (this.state.circleSpanRadian != nextProps.circleSpanRadian) {
             console.log(nextProps.circleSpanRadian);
             this.setState({

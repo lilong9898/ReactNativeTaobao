@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, DeviceEventEmitter} from 'react-native';
 
+import CircularProgressBarSvgWithSweepGradientFill from './CircularProgressBarSvgWithSweepGradientFill';
+
 export default class WeTao extends Component {
 
     render() {

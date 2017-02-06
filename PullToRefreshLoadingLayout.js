@@ -1,6 +1,11 @@
 import React, {Component, PropTypes} from 'react';
 import {
-    View, Text, ScrollView, Dimensions, StyleSheet, requireNativeComponent,
+    View,
+    Text,
+    ScrollView,
+    Dimensions,
+    StyleSheet,
+    requireNativeComponent,
 } from 'react-native';
 
 import PULL_TO_REFRESH_STATE from './PullToRefreshState';
@@ -12,7 +17,6 @@ const STATE_REFRESHING = PULL_TO_REFRESH_STATE.STATE_REFRESHING;
 const STATE_MANUAL_REFRESHING = PULL_TO_REFRESH_STATE.STATE_MANUAL_REFRESHING;
 const STATE_OVERSCROLLING = PULL_TO_REFRESH_STATE.STATE_OVERSCROLLING;
 
-import CircularProgressBarART from './CircularProgressBarART';
 import CircularProgressBarSvg from './CircularProgressBarSvg';
 
 export default class PullToRefreshLoadingLayout extends Component {
@@ -108,15 +112,13 @@ export default class PullToRefreshLoadingLayout extends Component {
                 onLayout={this.onLayout.bind(this)}
             >
                 <View
-                    style={[{height:this.props.minDraggedDistanceToRefresh}, styles.contentArea]}
+                    style={[styles.contentArea]}
                 >
-                    <CircularProgressBarSvg/>
-                    <CircularProgressBarART
-                        style={styles.circleProgress}
-                        circleRadius={10}
-                        circleColor='gray'
-                        circleSpanRadian={circleSpanRadian}
-                    />
+                    <CircularProgressBarSvg
+                        size={40}
+                        outerRadius={15}
+                        innerRadius={10}
+                        progress={100 * this.state.loadingLayoutScrollPositionRatio}/>
                     <Text
                         style={[styles.statusText]}
                         numberOfLines={1}
@@ -132,12 +134,13 @@ export default class PullToRefreshLoadingLayout extends Component {
 const styles = {
     container: {
         justifyContent: 'flex-end',
+        alignItems: 'center',
     },
     contentArea: {
         flexDirection: 'row',
         justifyContent: 'center',
-        alignItems: 'flex-end',
-        marginBottom: 10,
+        alignItems: 'center',
+        marginBottom: 5,
     },
     circleProgress: {
         width: 25,
