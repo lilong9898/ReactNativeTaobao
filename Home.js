@@ -35,11 +35,11 @@ export default class Home extends Component {
 
     constructor(props) {
         super(props);
-        let dataSource = new CustomViewPager.DataSource({
-            pageHasChanged: (p1, p2) => p1 !== p2,
-        });
+
+        this.dataSetIndex = 0;
+
         this.state = {
-            dataSource: dataSource.cloneWithPages(BANNERS)
+            viewPagerDataSource: this.getNewViewPagerDataSource(BANNERS[0])
         };
 
     }
@@ -47,6 +47,12 @@ export default class Home extends Component {
     static propTypes = {
         height: React.PropTypes.number.isRequired,
     };
+
+    getNewViewPagerDataSource(data) {
+        return new CustomViewPager.DataSource({
+            pageHasChanged: (p1, p2) => p1 !== p2,
+        }).cloneWithPages(data);
+    }
 
     getLoadingLayout(loadingLayoutHeight: number, minDraggedDistanceToRefesh: number, pullToRefreshState: string, loadingLayoutScrollPositionRatio: number) {
         return (
@@ -77,7 +83,18 @@ export default class Home extends Component {
         );
     }
 
-    pullToRefreshViewOnRefresh() {
+    onRefresh() {
+
+        if (this.dataSetIndex == 0) {
+            this.dataSetIndex = 1;
+        } else if (this.dataSetIndex == 1) {
+            this.dataSetIndex = 0;
+        }
+
+        this.setState({
+            viewPagerDataSource: this.getNewViewPagerDataSource(BANNERS[this.dataSetIndex])
+        });
+
         this.dummyLoadingTimer = setTimeout(
             () => {
                 DeviceEventEmitter.emit(DEVICE_EVENT_TYPE_NOTIFY_REFRESH_COMPLETE);
@@ -92,6 +109,7 @@ export default class Home extends Component {
     }
 
     render() {
+
         return (
             <PullToRefreshScrollView
                 height={this.props.height}
@@ -99,19 +117,19 @@ export default class Home extends Component {
                 style={styles.pullToRefreshView}
                 minDraggedDistanceToRefresh={75}
                 renderLoadingLayout={this.getLoadingLayout}
-                onRefreshStart={this.pullToRefreshViewOnRefresh}
+                onRefreshStart={this.onRefresh.bind(this)}
             >
                 <View
                     style={styles.contentContainer}
                     collapsable={false}>
                     <CustomViewPager
                         style={styles.viewPager}
-                        dataSource={this.state.dataSource}
+                        dataSource={this.state.viewPagerDataSource}
                         renderPage={this.getViewPagerPage}
                         renderPageIndicator={this.getViewPagerPageIndicator}
                         isLoop={true}
                         autoPlay={true}
-                        slideIntervalMs={1000}
+                        slideIntervalMs={3000}
                     />
                     <CustomFuctionButtonGroup
                         style={styles.functionButtonGroup}

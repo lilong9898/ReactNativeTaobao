@@ -1,5 +1,13 @@
 import React, {Component, PropTypes} from 'react';
-import {Dimensions, Animated, Text, View, TouchableOpacity, PanResponder, StyleSheet} from 'react-native';
+import {
+    Dimensions,
+    Animated,
+    Text,
+    View,
+    TouchableOpacity,
+    PanResponder,
+    StyleSheet
+} from 'react-native';
 
 import CustomViewPageIndicator from './CustomViewPageIndicator';
 import CustomViewPagerDataSource from './CustomViewPagerDataSource';
@@ -13,8 +21,8 @@ const DEFAULT_SLIDE_DIRECTION = SLIDE_DIRECTION_HORIZONTAL;
 
 export default class CustomViewPager extends Component {
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.duringFling = false;
         this.state = {
             // 当前页的序号
@@ -25,6 +33,8 @@ export default class CustomViewPager extends Component {
             viewHeight: 0,
             // 一次滑动过程中，标示滑动程度的百分比，从-1到1
             scrollValue: new Animated.Value(0),
+            // 数据源
+            dataSource: props.dataSource,
         };
     }
 
@@ -244,12 +254,13 @@ export default class CustomViewPager extends Component {
         }
 
         if (nextProps.dataSource) {
-            // 最大的页序号
-            let maxPage = nextProps.dataSource.getPageCount() - 1;
-            // 最大页序号改变后的当前页序号
-            let newCurrentPageIndex = Math.min(this.getCurrentPageIndex(), maxPage);
-            // 移动到新的当前页序号
-            this.movePage(newCurrentPageIndex - this.getCurrentPageIndex(), false);
+
+            // 重设数据源
+            this.setState({
+                currentPageIndex: 0,
+                dataSource: nextProps.dataSource,
+            });
+
         }
 
     }
@@ -383,7 +394,7 @@ export default class CustomViewPager extends Component {
     }
 
     getPageCount() {
-        return this.props.dataSource.pageIdentities.length;
+        return this.state.dataSource.pageIdentities.length;
     }
 
     renderPageIndicator(props) {
@@ -401,7 +412,7 @@ export default class CustomViewPager extends Component {
     }
 
     getPage(pageKey: string, pageIndex: number) {
-        return this.props.renderPage(pageKey, pageIndex, this.props.dataSource.getPageData(pageIndex), this.state.viewWidth, this.state.viewHeight);
+        return this.props.renderPage(pageKey, pageIndex, this.state.dataSource.getPageData(pageIndex), this.state.viewWidth, this.state.viewHeight);
     }
 
     onLayout(event) {
@@ -520,7 +531,8 @@ export default class CustomViewPager extends Component {
                     flexDirection: 'column',
                 }
             transform = this.state.scrollValue.interpolate({
-                inputRange: [-1, 1], outputRange: [-2 * this.state.viewHeight, 0]
+                inputRange: [-1, 1],
+                outputRange: [-2 * this.state.viewHeight, 0]
             });
             transformStyle = {transform: [{translateY: transform}]};
         }
