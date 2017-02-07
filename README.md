@@ -1,4 +1,4 @@
-# First Page of Taobao Android Mobile App by ReactNative
+# React Native First Page of Taobao Android App
 
 ## Demo
 ![](./demo/demo1.gif) ![](./demo/demo2.gif)
