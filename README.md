@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/lilong9898/ReactNativeTaobao.svg?branch=master)](https://travis-ci.org/lilong9898/ReactNativeTaobao)
+
 # React Native First Page of Taobao Android App
 
 ## Demo
