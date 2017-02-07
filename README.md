@@ -22,7 +22,7 @@ ReactNative provides [ViewPagerAndroid](https://facebook.github.io/react-native/
 Related code: [CustomViewPager](./view/CustomViewPager.js).
 
 ### PullToRefresh's implementation
-At first the demo tries to implement a pull-to-refresh-scrollview in pure js, using [ScrollView](https://facebook.github.io/react-native/docs/scrollview.html), [PanResponder](https://facebook.github.io/react-native/docs/panresponder.html) and [Animated](https://facebook.github.io/react-native/docs/animated.html). Basic idea is to concatenate a loading layout and a `ScrollView`: when loading layout is hidden, `ScrollView` is receiving gestures. When loading layout is pulled out to show, panresponder is receiving gestures, so scrollview receives no gesture, and loading layout is pulled out using `Animation`. However, this idea encounters a gesture processing problem : [react-native/issue/1046](https://github.com/facebook/react-native/issues/1046), which indicates:
+At first the demo tries to implement a pull-to-refresh-scrollview in pure js, using [ScrollView](https://facebook.github.io/react-native/docs/scrollview.html), [PanResponder](https://facebook.github.io/react-native/docs/panresponder.html) and [Animated](https://facebook.github.io/react-native/docs/animated.html). Basic idea is to concatenate a loading layout and a `ScrollView`: when loading layout is hidden, `ScrollView` is receiving gestures. When loading layout is pulled out to show, panresponder is receiving gestures, so scrollview receives no gesture, and loading layout is pulled out using `Animation`. However, this idea encounters a gesture processing problem : [react-native/issues/1046](https://github.com/facebook/react-native/issues/1046), which indicates:
 > Ideally, once something gets the responder, it can prevent others from responding by setting onPanResponderTerminationRequest: () => false,
 
 > However, we often have troubles while interacting with touch interactions happening on the main thread, like the iOS slider, or any scroll views. The problem is that javascript cannot immediately reject the responsiveness of the native event, because the main thread must synchronously decide if JS or the scroll view should become responder, and JS can only respond asynchronously.
@@ -31,7 +31,7 @@ At first the demo tries to implement a pull-to-refresh-scrollview in pure js, us
 
 Due to this issue, and the fact that ReactNative `ScrollView` wraps a native `ReactScrollView`, `PanResponder` can not totally block gestures from passing to the native scrollview. As a result, sometimes when we try to pull down to refresh, gestures are absorbed by native scrollview to show an overscroll effect, not the pulldown of loading layout.
 
-To solve this problem, the demo processes gestures in native code, then export the native view to ReactNative's js realm. Based on widely-known [chrisbanes/Android-PullToRefresh](https://github.com/chrisbanes/Android-PullToRefresh), the demo simplifies its code, deleting unnecessary mode & attribute, retaining just the gesture processing part: [RCTPullToRefreshScrollView.java](./android/app/src/main/java/com/rntaobao/pullToRefresh/view/RCTPullToRefreshScrollView.java). The demo exports it to js realm by [RCTPullToRefreshScrollViewManager.java](./android/app/src/main/java/com/rntaobao/pullToRefresh/viewManager/RCTPullToRefreshScrollViewManager.java).
+To solve this problem, the demo processes gestures in native code, then export the native view to ReactNative's js realm. Based on widely-known [chrisbanes/Android-PullToRefresh](https://github.com/chrisbanes/Android-PullToRefresh), the demo simplifies its code, deleting unnecessary mode & attribute, retaining just the gesture processing part: [RCTPullToRefreshScrollView.java](./android/app/src/main/java/com/rntaobao/pullToRefresh/view/RCTPullToRefreshScrollView.java). Then the demo exports it to js realm by [RCTPullToRefreshScrollViewManager.java](./android/app/src/main/java/com/rntaobao/pullToRefresh/viewManager/RCTPullToRefreshScrollViewManager.java).
 
 Another problem is how to define loading layout in js, not in java. This offers flexibility to hot reload the UI of loading layout. Intuitively, the demo tries to pass js element to native view by [Props](https://facebook.github.io/react-native/docs/props.html). But this doesn't work since [Native UI Components](https://facebook.github.io/react-native/docs/native-components-android.html) only imports props of primitive types, or simple data structure such as `ReadableArray` & `ReadableMap`. 
 
@@ -39,7 +39,7 @@ To hack this, the demo defines a native [RCTPullToRefreshLoadingLayout](./androi
 
 Notably, to support the negative padding necessary for the pull down effect, `RCTPullToRefreshScrollView` should handle its own layout, rather than leaving it to js. This is made possible by:
 ```java
- @Override
+    @Override
     public boolean needsCustomLayoutForChildren() {
         return true;
     }
@@ -47,3 +47,7 @@ Notably, to support the negative padding necessary for the pull down effect, `RC
 in `RCTPullToRefreshScrollViewManager`.
 
 ### CircleProgressBar's implementation
+
+The circle progress bar in loading layout, is drawn by [react-native-svg](https://www.npmjs.com/package/react-native-svg) and [d3-shape](https://www.npmjs.com/package/d3-shape). The idea comes from [fdnhkj/react-native-conical-gradient](https://github.com/fdnhkj/react-native-conical-gradient). Related code: [CircularProgressBarSvg.java](./view/CircularProgressBarSvg.js).
+
+The demo also provides a `ART` version of circle progress bar. Sadly `ART` has NO official documentation: [react-native/issues/4789](https://github.com/facebook/react-native/issues/4789), and it frequently crashes 
