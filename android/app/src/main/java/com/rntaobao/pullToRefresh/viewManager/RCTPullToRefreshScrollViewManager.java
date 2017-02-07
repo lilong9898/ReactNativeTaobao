@@ -1,4 +1,4 @@
-package com.toutiao.pullToRefresh.viewManager;
+package com.rntaobao.pullToRefresh.viewManager;
 
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.common.MapBuilder;
@@ -7,10 +7,10 @@ import com.facebook.react.uimanager.UIManagerModule;
 import com.facebook.react.uimanager.ViewGroupManager;
 import com.facebook.react.uimanager.annotations.ReactProp;
 import com.facebook.react.uimanager.events.EventDispatcher;
-import com.toutiao.pullToRefresh.event.LoadingLayoutScrollPositionChangeEvent;
-import com.toutiao.pullToRefresh.event.OnRefreshStartEvent;
-import com.toutiao.pullToRefresh.event.PullToRefreshStateChangeEvent;
-import com.toutiao.pullToRefresh.view.RCTPullToRefreshScrollView;
+import com.rntaobao.pullToRefresh.event.LoadingLayoutScrollPositionChangeEvent;
+import com.rntaobao.pullToRefresh.event.OnRefreshStartEvent;
+import com.rntaobao.pullToRefresh.event.PullToRefreshStateChangeEvent;
+import com.rntaobao.pullToRefresh.view.RCTPullToRefreshScrollView;
 
 import java.util.Map;
 
@@ -63,7 +63,7 @@ public class RCTPullToRefreshScrollViewManager extends ViewGroupManager<RCTPullT
 
         /**
          * {@link RCTPullToRefreshScrollView.OnPullToRefreshStateChangeListener}
-         * 向js端发送{@link com.toutiao.pullToRefresh.view.RCTPullToRefreshScrollView.State}变化的信息
+         * 向js端发送{@link com.rntaobao.pullToRefresh.view.RCTPullToRefreshScrollView.State}变化的信息
          * */
         view.setOnPullToRefreshStateChangeListener(new RCTPullToRefreshScrollView.OnPullToRefreshStateChangeListener() {
             @Override
@@ -76,7 +76,7 @@ public class RCTPullToRefreshScrollViewManager extends ViewGroupManager<RCTPullT
         });
 
         /**
-         * {@link com.toutiao.pullToRefresh.view.RCTPullToRefreshScrollView.OnLoadingLayoutScrollPositionChangeListener}
+         * {@link com.rntaobao.pullToRefresh.view.RCTPullToRefreshScrollView.OnLoadingLayoutScrollPositionChangeListener}
          * 向js端发送其滚动位置变化的信息
          * */
         view.setOnLoadingLayoutScrollPositionChangeListener(new RCTPullToRefreshScrollView.OnLoadingLayoutScrollPositionChangeListener() {
@@ -89,7 +89,7 @@ public class RCTPullToRefreshScrollViewManager extends ViewGroupManager<RCTPullT
         });
 
         /**
-         * {@link com.toutiao.pullToRefresh.view.RCTPullToRefreshScrollView.OnRefreshListener}
+         * {@link com.rntaobao.pullToRefresh.view.RCTPullToRefreshScrollView.OnRefreshListener}
          * 向js端发送刷新开始的消息
          * */
         view.setOnRefreshListener(new RCTPullToRefreshScrollView.OnRefreshListener() {
@@ -133,7 +133,7 @@ public class RCTPullToRefreshScrollViewManager extends ViewGroupManager<RCTPullT
     }
 
     /**
-     * 需要java来负责本层的layout而非js，以便支持{@link com.toutiao.pullToRefresh.view.RCTPullToRefreshLoadingLayout}效果所必须的负的padding设置
+     * 需要java来负责本层的layout而非js，以便支持{@link com.rntaobao.pullToRefresh.view.RCTPullToRefreshLoadingLayout}效果所必须的负的padding设置
      * 而css不支持负的padding
      */
     @Override

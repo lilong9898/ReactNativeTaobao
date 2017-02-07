@@ -1,4 +1,4 @@
-package com.toutiao.pullToRefresh.view;
+package com.rntaobao.pullToRefresh.view;
 
 import com.facebook.react.views.view.ReactViewGroup;
 

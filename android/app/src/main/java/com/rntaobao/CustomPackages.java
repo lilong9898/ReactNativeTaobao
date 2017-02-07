@@ -1,12 +1,12 @@
-package com.toutiao;
+package com.rntaobao;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.JavaScriptModule;
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
-import com.toutiao.pullToRefresh.viewManager.RCTPullToRefreshLoadingLayoutManager;
-import com.toutiao.pullToRefresh.viewManager.RCTPullToRefreshScrollViewManager;
+import com.rntaobao.pullToRefresh.viewManager.RCTPullToRefreshLoadingLayoutManager;
+import com.rntaobao.pullToRefresh.viewManager.RCTPullToRefreshScrollViewManager;
 
 import java.util.ArrayList;
 import java.util.Collections;

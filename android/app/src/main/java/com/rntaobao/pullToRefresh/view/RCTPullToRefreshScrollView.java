@@ -1,4 +1,4 @@
-package com.toutiao.pullToRefresh.view;
+package com.rntaobao.pullToRefresh.view;
 
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.views.scroll.ReactScrollView;
@@ -280,7 +280,7 @@ public class RCTPullToRefreshScrollView extends LinearLayout {
     }
 
     /**
-     * {@link com.toutiao.pullToRefresh.viewManager.RCTPullToRefreshScrollViewManager#setMinDraggedDistanceToRefresh(RCTPullToRefreshScrollView, int)}
+     * {@link com.rntaobao.pullToRefresh.viewManager.RCTPullToRefreshScrollViewManager#setMinDraggedDistanceToRefresh(RCTPullToRefreshScrollView, int)}
      */
     public void setMinDraggedDistanceToRefreshDp(int distanceDp) {
         float density = getResources().getDisplayMetrics().density;

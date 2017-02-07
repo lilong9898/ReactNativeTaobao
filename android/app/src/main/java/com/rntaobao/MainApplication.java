@@ -1,4 +1,4 @@
-package com.toutiao;
+package com.rntaobao;
 
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;

@@ -1,14 +1,14 @@
-package com.toutiao.pullToRefresh.event;
+package com.rntaobao.pullToRefresh.event;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.uimanager.events.Event;
 import com.facebook.react.uimanager.events.RCTEventEmitter;
-import com.toutiao.pullToRefresh.view.RCTPullToRefreshScrollView;
+import com.rntaobao.pullToRefresh.view.RCTPullToRefreshScrollView;
 
 /**
  * {@link RCTPullToRefreshScrollView.OnPullToRefreshStateChangeListener}
- * 所监听到的{@link com.toutiao.pullToRefresh.view.RCTPullToRefreshScrollView.State}变化
+ * 所监听到的{@link com.rntaobao.pullToRefresh.view.RCTPullToRefreshScrollView.State}变化
  * 将改变化发送给js端
  */
 

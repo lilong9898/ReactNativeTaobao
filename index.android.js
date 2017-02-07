@@ -43,7 +43,7 @@ const TAB_TITLE_MINE = '我的淘宝';
  * 因为发现这种方法获取的屏幕宽高是可能变的
  * 顶级模块用flex:1，需要具体尺寸时用onLayout回调来获取
  * */
-class TouTiao extends Component {
+class RNTaobao extends Component {
 
     constructor(props) {
         super(props);
@@ -150,4 +150,4 @@ const styles = StyleSheet.create({
     })
     ;
 
-AppRegistry.registerComponent('TouTiao', () => TouTiao);
+AppRegistry.registerComponent('RNTaobao', () => RNTaobao);

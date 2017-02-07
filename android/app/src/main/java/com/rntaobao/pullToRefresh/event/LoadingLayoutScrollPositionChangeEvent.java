@@ -1,4 +1,4 @@
-package com.toutiao.pullToRefresh.event;
+package com.rntaobao.pullToRefresh.event;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.WritableMap;
@@ -6,8 +6,8 @@ import com.facebook.react.uimanager.events.Event;
 import com.facebook.react.uimanager.events.RCTEventEmitter;
 
 /**
- * {@link com.toutiao.pullToRefresh.view.RCTPullToRefreshScrollView.OnLoadingLayoutScrollPositionChangeListener}
- * 所监听到的{@link com.toutiao.pullToRefresh.view.RCTPullToRefreshLoadingLayout}的滑动距离的变化
+ * {@link com.rntaobao.pullToRefresh.view.RCTPullToRefreshScrollView.OnLoadingLayoutScrollPositionChangeListener}
+ * 所监听到的{@link com.rntaobao.pullToRefresh.view.RCTPullToRefreshLoadingLayout}的滑动距离的变化
  * 将变化发送给js端
  */
 

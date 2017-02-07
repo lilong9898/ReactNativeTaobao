@@ -1,8 +1,8 @@
-package com.toutiao.pullToRefresh.viewManager;
+package com.rntaobao.pullToRefresh.viewManager;
 
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.ViewGroupManager;
-import com.toutiao.pullToRefresh.view.RCTPullToRefreshLoadingLayout;
+import com.rntaobao.pullToRefresh.view.RCTPullToRefreshLoadingLayout;
 
 /**
  * Created by lilong on 17-1-31.
