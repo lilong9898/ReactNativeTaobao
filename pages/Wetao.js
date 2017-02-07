@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text, StyleSheet, DeviceEventEmitter} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 
 import CircularProgressBarSvgWithSweepGradientFill from '../view/CircularProgressBarSvgWithSweepGradientFill';
 
@@ -8,16 +8,23 @@ export default class WeTao extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <Text>Wetao</Text>
+                <Text
+                    style={styles.text}
+                >
+                    oops, 微淘被猫吃了....
+                </Text>
             </View>
         );
     }
 }
 
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        // backgroundColor: 'black',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    text: {
+        fontSize: 30,
     },
 });
