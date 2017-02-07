@@ -18,6 +18,7 @@ React version of this demo is 15.4.1. ReactNative version of this demo is 0.41.2
 
 ### ViewPager's implementation
 ReactNative provides [ViewPagerAndroid](http://reactnative.cn/docs/0.41/viewpagerandroid.html#content) as a component to fullfill similar function of native ViewPager. In fact it just wraps ReactViewPager. The drawback of simply using ViewPagerAndroid is lack of flexibility: e.g., it's impossible to slide the content in vertical direction. Inspired by [race604/react-native-viewpager](https://github.com/race604/react-native-viewpager), the viewpager in this demo enhances it, adds more flexibility such as control of slide direction, pager indicator style & position, etc. In this demo, there are both horizontal & vertical sliding viewpagers.
+Related code: [CustomViewPager](#./view/CustomViewPager.js).
 
 ### PullToRefresh's implementation
 
