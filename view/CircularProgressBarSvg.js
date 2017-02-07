@@ -3,7 +3,7 @@ import {Animated, View} from 'react-native';
 import Svg, {Defs, Stop, G, Path, LinearGradient} from 'react-native-svg';
 import {arc} from 'd3-shape';
 
-export default class CircularProgressBarSvgWithSweepGradientFill extends Component {
+export default class CircularProgressBarSvg extends Component {
 
     constructor(props) {
         super(props);
