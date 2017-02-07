@@ -8,7 +8,7 @@ import {
     requireNativeComponent,
 } from 'react-native';
 
-import PULL_TO_REFRESH_STATE from './PullToRefreshState';
+import PULL_TO_REFRESH_STATE from '../global/PullToRefreshState';
 
 const STATE_RESET = PULL_TO_REFRESH_STATE.STATE_RESET;
 const STATE_PULL_TO_REFRESH = PULL_TO_REFRESH_STATE.STATE_PULL_TO_REFRESH;

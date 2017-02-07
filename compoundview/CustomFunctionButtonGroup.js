@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import {View, Text, Image, Dimensions, StyleSheet} from 'react-native';
 
 import CustomFunctionButton from './CustomFunctionButton';
-import DATA_ARRAY from './FunctionButtonDataArray';
+import DATA_ARRAY from '../data/FunctionButtonData';
 
 // 按钮行数
 const ROW_COUNT = 2;

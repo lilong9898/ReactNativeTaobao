@@ -3,7 +3,7 @@ import {View, Text, Image, Dimensions, StyleSheet} from 'react-native';
 
 import CustomProduct from './CustomProduct';
 
-import GLOBAL_UI_SETTING from './GlobalUISetting';
+import GLOBAL_UI_SETTING from '../global/GlobalUISetting';
 
 // 首页的普通商品组
 export default class CustomProductGroup extends Component {

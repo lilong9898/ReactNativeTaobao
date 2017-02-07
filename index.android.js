@@ -9,11 +9,11 @@ import {
 
 import TabNavigator from 'react-native-tab-navigator';
 
-import Home from './Home';
-import WeTao from './Wetao';
-import Ask from './Ask';
-import Cart from './Cart';
-import Mine from './Mine';
+import Home from './pages/Home';
+import WeTao from './pages/Wetao';
+import Ask from './pages/Ask';
+import Cart from './pages/Cart';
+import Mine from './pages/Mine';
 
 const TAB_ICON_HOME_NOT_SELECTED = require('./images/tabIcon/tab_icon_home_not_selected.png');
 const TAB_ICON_HOME_SELECTED = require('./images/tabIcon/tab_icon_home_selected.png');

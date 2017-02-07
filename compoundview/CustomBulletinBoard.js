@@ -1,12 +1,12 @@
 import React, {Component, PropTypes} from 'react';
 import {View, Text, Image, Dimensions, StyleSheet} from 'react-native';
 
-import CustomViewPager from './CustomViewPager';
+import CustomViewPager from '../view/CustomViewPager';
 
 // 淘宝头条图标
-const TAOBAOTOUTIAO_IMG = require('./images/bulletin/taobaotoutiao.png');
+const TAOBAOTOUTIAO_IMG = require('./../images/bulletin/taobaotoutiao.png');
 // 公告板的消息类型和文字
-import news from './BulletinDataArray';
+import news from '../data/BulletinData';
 
 // 淘宝头条公告板
 export default class CustomBulletinBoard extends Component {

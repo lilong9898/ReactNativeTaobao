@@ -4,7 +4,7 @@ import {View, Text, Image, Dimensions, StyleSheet} from 'react-native';
 import CustomHighlightProduct from './CustomHighlightProduct';
 import CustomAreaDivider from './CustomAreaDivider';
 
-import PRODUCT_DATA from './ProductData';
+import PRODUCT_DATA from '../data/ProductData';
 const HIGHLIGHT_PRODUCTS = PRODUCT_DATA.HIGHLIGHT_PRODUCTS;
 
 // 首页明星商品按钮组成的组

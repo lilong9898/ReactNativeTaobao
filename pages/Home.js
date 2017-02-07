@@ -7,24 +7,24 @@ import {
     StyleSheet,
     DeviceEventEmitter
 } from 'react-native';
-import CustomViewPager from './CustomViewPager';
-import CustomViewPageIndicator from './CustomViewPageIndicator';
-import CustomFuctionButtonGroup from './CustomFunctionButtonGroup';
-import CustomBulletinBoard from './CustomBulletinBoard';
-import CustomHighlightProductGroup from './CustomHighlightProductGroup';
-import CustomProductGroup from './CustomProductGroup';
-import CustomAreaDivider from './CustomAreaDivider';
+import CustomViewPager from '../view/CustomViewPager';
+import CustomViewPageIndicator from '../view/CustomViewPageIndicator';
+import CustomFuctionButtonGroup from '../compoundview/CustomFunctionButtonGroup';
+import CustomBulletinBoard from '../compoundview/CustomBulletinBoard';
+import CustomHighlightProductGroup from '../compoundview/CustomHighlightProductGroup';
+import CustomProductGroup from '../compoundview/CustomProductGroup';
+import CustomAreaDivider from '../compoundview/CustomAreaDivider';
 
-import PullToRefreshScrollView from './PullToRefreshScrollView';
-import PullToRefreshLoadingLayout from './PullToRefreshLoadingLayout';
+import PullToRefreshScrollView from '../view/PullToRefreshScrollView';
+import PullToRefreshLoadingLayout from '../view/PullToRefreshLoadingLayout';
 
 // 首页轮播广告的图片
-import BANNERS from './BannersDataArray';
+import BANNERS from '../data/BannerData';
 
 // 导入全局UI设置
-import GLOBAL_UI_SETTING from './GlobalUISetting';
+import GLOBAL_UI_SETTING from '../global/GlobalUISetting';
 // 导入商品信息
-import PRODUCT_DATA from './ProductData';
+import PRODUCT_DATA from '../data/ProductData';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;

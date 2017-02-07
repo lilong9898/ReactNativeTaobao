@@ -1,14 +1,14 @@
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, DeviceEventEmitter} from 'react-native';
 
-import CircularProgressBarSvgWithSweepGradientFill from './CircularProgressBarSvgWithSweepGradientFill';
+import CircularProgressBarSvgWithSweepGradientFill from '../view/CircularProgressBarSvgWithSweepGradientFill';
 
 export default class WeTao extends Component {
 
     render() {
         return (
             <View style={styles.container}>
-                <Text>HAHA</Text>
+                <Text>Wetao</Text>
             </View>
         );
     }

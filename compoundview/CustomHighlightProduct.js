@@ -3,7 +3,7 @@ import {View, Text, Image, Dimensions, StyleSheet} from 'react-native';
 
 import CustomCountDownClock from './CustomCountDownClock';
 
-import GLOBAL_UI_SETTING from './GlobalUISetting';
+import GLOBAL_UI_SETTING from '../global/GlobalUISetting';
 
 const PADDING = 4;
 

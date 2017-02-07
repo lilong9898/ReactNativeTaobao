@@ -13,7 +13,7 @@ import {
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
-import PULL_TO_REFRESH_STATE from './PullToRefreshState';
+import PULL_TO_REFRESH_STATE from '../global/PullToRefreshState';
 const STATE_RESET = PULL_TO_REFRESH_STATE.STATE_RESET;
 
 const UIManager = require('UIManager');
