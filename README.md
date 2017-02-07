@@ -17,8 +17,16 @@ React version of this demo is 15.4.1. ReactNative version of this demo is 0.41.2
 ## Insight & Pitfalls
 
 ### ViewPager's implementation
-ReactNative provides [ViewPagerAndroid](http://reactnative.cn/docs/0.41/viewpagerandroid.html#content) as a component to fullfill similar function of native ViewPager. In fact it just wraps ReactViewPager. The drawback of simply using ViewPagerAndroid is lack of flexibility: e.g., it's impossible to slide the content in vertical direction. Inspired by [race604/react-native-viewpager](https://github.com/race604/react-native-viewpager), the viewpager in this demo enhances it, adds more flexibility such as control of slide direction, pager indicator style & position, etc. In this demo, there are both horizontal & vertical sliding viewpagers.
+ReactNative provides [ViewPagerAndroid](https://facebook.github.io/react-native/docs/viewpagerandroid.html) as a component to fullfill similar function of native ViewPager. In fact it just wraps ReactViewPager. The drawback of simply using ViewPagerAndroid is lack of flexibility: e.g., it's impossible to slide the content in vertical direction. Inspired by [race604/react-native-viewpager](https://github.com/race604/react-native-viewpager), the viewpager in this demo enhances it, adds more flexibility such as control of slide direction, pager indicator style & position, etc. In this demo, there are both horizontal & vertical sliding viewpagers.
+
 Related code: [CustomViewPager](./view/CustomViewPager.js).
 
 ### PullToRefresh's implementation
+At first the demo tries to implement a pull-to-refresh-scrollview in pure js, using [ScrollView](https://facebook.github.io/react-native/docs/scrollview.html), [PanResponder](https://facebook.github.io/react-native/docs/panresponder.html) and [Animated](https://facebook.github.io/react-native/docs/animated.html). Basic idea is to concatenate a loading layout and a scrollView: when loading layout is hidden, scrollView is receiving gestures. When loading layout is pulled out to show, panresponder is receiving gestures, so scrollview receives no gesture, and loading layout is pulled out using Animation. However, this idea encounters a gesture processing problem : [react-native/issue/1046](https://github.com/facebook/react-native/issues/1046), which indicates:
+> Ideally, once something gets the responder, it can prevent others from responding by setting onPanResponderTerminationRequest: () => false,
 
+> However, we often have troubles while interacting with touch interactions happening on the main thread, like the iOS slider, or any scroll views. The problem is that javascript cannot immediately reject the responsiveness of the native event, because the main thread must synchronously decide if JS or the scroll view should become responder, and JS can only respond asynchronously.
+
+> This is a difficult problem to solve, and is something we have been thinking about for a while. cc @vjeux @sahrens @jordwalke @lelandrichardson. This could be solved in a similar way as @kmagiera is moving animations to the UI thread. Basically we construct and serialize some logic such that these immediate operations can be resolved without waiting for the JS thread.
+
+Due to this issue, and the fact that ReactNative scrollView wraps a native scrollView, panresponder can not totally block gestures from passing to the native scrollview. As a result, sometimes when we try to pull down to refresh, gestures are absorbed by native scrollview to show an overscroll effect, not the pulldown of loading layout.
