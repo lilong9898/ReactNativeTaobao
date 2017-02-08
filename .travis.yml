@@ -1,11 +1,11 @@
 language: android
 jdk: oraclejdk8
 # this part installs dependencies of node.js and react-native
-# before_install:
-# - nvm install 6
-# - node --version
-# install:
-# - npm install
+before_install:
+- nvm install 6
+- node --version
+install:
+- npm install
 android:
   components:
   - build-tools-23.0.1
