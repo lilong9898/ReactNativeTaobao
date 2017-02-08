@@ -42,16 +42,15 @@ ReactNative提供了[ViewPagerAndroid](http://reactnative.cn/docs/0.41/viewpager
 
 另外的一个问题是怎么在js里定义loading layout, 而不是在java里.这样子就可以灵活的热更新loading layout的样式. 直觉上看, 应该把js元素通过[Props](https://facebook.github.io/react-native/docs/props.html)传给原生的控件. 但此路不通，因为[原生控件](http://reactnative.cn/docs/0.41/native-component-android.html#content)只接受基本类型的props,　或者是简单的数据结构比如`ReadableArray` & `ReadableMap`. 
 
-To hack this, the demo defines a native [RCTPullToRefreshLoadingLayout.java](./android/app/src/main/java/com/rntaobao/pullToRefresh/view/RCTPullToRefreshLoadingLayout.java), exports it to js by [RCTPullToRefreshLoadingLayoutManager.java](./android/app/src/main/java/com/rntaobao/pullToRefresh/viewManager/RCTPullToRefreshLoadingLayoutManager.java), the js component is [PullToRefreshLoadingLayout.js](./view/PullToRefreshLoadingLayout.js). When the js component of this view, `<RCTPullToRefreshLoadingLayout>` is added as a child of `<RCTPullToRefreshScrollView>`, on the java side, `RCTPullToRefreshLoadingLayout` is also added as a child of `RCTPullToRefreshScrollView`. Override the `addView` method of `RCTPullToRefreshScrollView` to search for instance of `RCTPullToRefreshLoadingLayout`. Once found, the demo gets the reference to it, i.e. the loading layout defined in js. With this reference, further manipulation with the loading layout is possible on java side.
+为了绕过这个限制, 本demo定义了一个原生的[RCTPullToRefreshLoadingLayout.java](./android/app/src/main/java/com/rntaobao/pullToRefresh/view/RCTPullToRefreshLoadingLayout.java),　通过 [RCTPullToRefreshLoadingLayoutManager.java](./android/app/src/main/java/com/rntaobao/pullToRefresh/viewManager/RCTPullToRefreshLoadingLayoutManager.java)把它导出到js端, 对应的js控件是[PullToRefreshLoadingLayout.js](./view/PullToRefreshLoadingLayout.js).　当这个控件的js版本,　也就是 `<RCTPullToRefreshLoadingLayout>`作为一个子元素加入到`<RCTPullToRefreshScrollView>`的时候, 在java端, `RCTPullToRefreshLoadingLayout`同步作为一个子view加入到`RCTPullToRefreshScrollView`.　覆盖`RCTPullToRefreshScrollView`的`addView`方法，搜索`RCTPullToRefreshLoadingLayout`的实例. 一旦找到, 本demo就拿到了它的引用, 这个正是在js端定义的loading layout. 有了这个引用, 就可以在java端对loading layout进行操作了.
 
-Notably, to support the negative padding necessary for the pull down effect, `RCTPullToRefreshScrollView` should handle its own layout, rather than leaving it to js. This is made possible by:
+需要注意的是, 下拉刷新效果会用到负的padding, 所以`RCTPullToRefreshScrollView`应该自己处理自己这一层的layout,　而不是像默认的那样让js负责. 所以要在`RCTPullToRefreshScrollViewManager`中设置:
 ```java
     @Override
     public boolean needsCustomLayoutForChildren() {
         return true;
     }
 ```
-in `RCTPullToRefreshScrollViewManager`.
 
 ### CircleProgressBar's implementation
 
