@@ -1,25 +1,26 @@
 [![Build Status](https://travis-ci.org/lilong9898/ReactNativeTaobao.svg?branch=master)](https://travis-ci.org/lilong9898/ReactNativeTaobao)
 
-# React Native First Page of Taobao Android App
+# React Native 仿淘宝安卓客户端首页
 
-## Demo
+## 演示
 ![](./demo/demo1.gif) ![](./demo/demo2.gif)
 
-## How to run
-1. Prepare your environment: [Requirements](http://facebook.github.io/react-native/docs/getting-started.html#requirements) and [Android Setup](http://facebook.github.io/react-native/docs/android-setup.html)
-2. Clone this repo, and goto the project root directory
-3. Run `npm install`
-4. Run `react-native run-android`
-5. Enjoy
+## 如何运行
+1. 准备环境: [配置环境](http://reactnative.cn/docs/0.41/getting-started.html#content)
+2. Clone 这个 repo, 然后定位到project的根目录
+3. 运行 `npm install`
+4. 运行 `react-native run-android`
+5. 看看效果^_^
 
-Note: For convenience, the demo enables bundling js & assets in debug mode, so there's no need to run `react-native start` for js packager startup. If you need to modify codes and reload the demo for effect, please modify [build.gradle](./android/app/build.gradle), change `bundleInDebug` from `true` to　`false`, run `react-native start` to start js packager, then connect your device to it. See [Running On Device](https://facebook.github.io/react-native/docs/running-on-device.html).
+Tips: 方便起见, 本demo开启了debug模式下的js & assets bundling, 所以没必要运行`react-native start`来启动js packager. 如果需要修改代码并热更新看看效果, 请修改[build.gradle](./android/app/build.gradle)，将`bundleInDebug`从`true`改成`false`, 运行`react-native start`启动js packager, 然后把设备连上. 详见[真机运行](http://reactnative.cn/docs/0.41/running-on-device-android.html#content).
 
-## Platform & ReactNative version
-Currently there's only Android implementation. So index.ios.js & ./ios are absent. 
-React version of this demo is 15.4.1. ReactNative version of this demo is 0.41.2.
+## 支持的平台和ReactNative版本
+目前只支持安卓平台，所以index.ios.js & ./ios是没有的. 
+React版本是15.4.1. ReactNative的版本是0.41.2.
 
-## DataSource
+## 数据源
 Sadly, all pictures and text are placed in the demo so far. Still searching for free Taobao API.
+遗憾的是，目前所有图片和文字都是放在本地的，没找到免费的淘宝API.
 
 ## Insight & Pitfalls
 
