@@ -58,6 +58,6 @@ Loading layout中的circle progress bar, 是用[react-native-svg](https://www.np
 
 本demo里还有一个`ART`版本的circle progress bar.　遗憾的是`ART`没有官方文档: [react-native/issues/4789](https://github.com/facebook/react-native/issues/4789), 而且经常崩溃(未找到原因). 代码: [CircularProgressBarART.js](./view/CircularProgressBarART.js).
 
-### TabNavigation's implementation
-TabNavigation is supported by [react-native-tab-navigator](https://www.npmjs.com/package/react-native-tab-navigator). One thing to mention is that the `SceneContainer` of this lib uses a style of `position: absolute`, making the scene content actually takes up the whole space of its parent view. For this demo, the `SceneContainer` is set to fixed height, which is the screen height minus tabBar height.
+### TabNavigation的实现
+TabNavigation是用[react-native-tab-navigator](https://www.npmjs.com/package/react-native-tab-navigator)来实现. 需要注意的是这个库里的`SceneContainer`用的style里是用`position: absolute`,　所以页的内容实际上是占据了整个tabNavigator父布局的空间. 因此本demo里,　 `SceneContainer`要设置成固定高, 等于屏幕高减去tabBar的高度.
 
