@@ -28,8 +28,8 @@ ReactNative提供了[ViewPagerAndroid](http://reactnative.cn/docs/0.41/viewpager
 
 代码: [CustomViewPager.js](./view/CustomViewPager.js).
 
-### PullToRefresh's implementation
-At first the demo tries to implement a pull-to-refresh-scrollview in pure js, using [ScrollView](https://facebook.github.io/react-native/docs/scrollview.html), [PanResponder](https://facebook.github.io/react-native/docs/panresponder.html) and [Animated](https://facebook.github.io/react-native/docs/animated.html). Basic idea is to concatenate a loading layout and a `ScrollView`: when loading layout is hidden, `ScrollView` is receiving gestures. When loading layout is pulled out to show, panresponder is receiving gestures, so scrollview receives no gesture, and loading layout is pulled out using `Animation`. However, this idea encounters a gesture processing problem : [react-native/issues/1046](https://github.com/facebook/react-native/issues/1046), which indicates:
+### PullToRefresh的实现
+从直觉上看，应该用纯js做一个pull-to-refresh-scrollview, 具体通过[ScrollView](http://reactnative.cn/docs/0.41/scrollview.html#content), [PanResponder](http://reactnative.cn/docs/0.41/panresponder.html#content)和[Animated](http://reactnative.cn/docs/0.41/animated.html#content). 基本想法是把一个loading layout和一个`ScrollView`拼起来: 当loading layout 隐藏的时候, `ScrollView`接收手势. 当loading layout被下拉出来的时候, `PanResponder`接收手势. 这样的话`ScrollView`就接收不到手势, 但loading layout就通过`Animation`被下拉出来了. 麻烦的是, 这种想法会遇到一个手势处理的问题:[react-native/issues/1046](https://github.com/facebook/react-native/issues/1046), 里面说:
 > Ideally, once something gets the responder, it can prevent others from responding by setting onPanResponderTerminationRequest: () => false,
 
 > However, we often have troubles while interacting with touch interactions happening on the main thread, like the iOS slider, or any scroll views. The problem is that javascript cannot immediately reject the responsiveness of the native event, because the main thread must synchronously decide if JS or the scroll view should become responder, and JS can only respond asynchronously.
