@@ -2,6 +2,8 @@
 
 # React Native 仿淘宝安卓客户端首页
 
+[English README: React Native First Page of Taobao Android App](./README.md).
+
 ## 演示
 ![](./demo/demo1.gif) ![](./demo/demo2.gif)
 
