@@ -12,9 +12,14 @@
 4. Run `react-native run-android`
 5. Enjoy
 
+Note: For convenience, the demo enables bundling js & assets in debug mode, so there's no need to run `react-native start` for js packager startup. If you need to modify codes and reload the demo for effect, please modify [build.gradle](./android/app/build.gradle), change `bundleInDebug` from `true` to　`false`, run `react-native start` to start js packager, then connect your device to it. See [Running On Device](https://facebook.github.io/react-native/docs/running-on-device.html).
+
 ## Platform & ReactNative version
 Currently there's only Android implementation. So index.ios.js & ./ios are absent. 
 React version of this demo is 15.4.1. ReactNative version of this demo is 0.41.2.
+
+## DataSource
+Sadly, all pictures and text are placed in the demo so far. Still searching for free Taobao API.
 
 ## Insight & Pitfalls
 
