@@ -114,7 +114,7 @@ class RNTaobao extends Component {
                     tabBarStyle={tabBarHeightStyle}
                     sceneStyle={sceneHeightStyle}
                 >
-                    {this.genrateTabNavigatorItem(TAB_NAME_HOME, TAB_TITLE_HOME, TAB_ICON_HOME_NOT_SELECTED, TAB_ICON_HOME_SELECTED, () =>
+                    {this.generateTabNavigatorItem(TAB_NAME_HOME, TAB_TITLE_HOME, TAB_ICON_HOME_NOT_SELECTED, TAB_ICON_HOME_SELECTED, () =>
                         <Home height={sceneHeightStyle.height}/>)}
                     {this.generateTabNavigatorItem(TAB_NAME_WETAO, TAB_TITLE_WETAO, TAB_ICON_WETAO_NOT_SELECTED, TAB_ICON_WETAO_SELECTED, () =>
                         <WeTao/>)}
