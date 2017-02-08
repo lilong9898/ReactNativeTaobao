@@ -19,15 +19,14 @@ Tips: 方便起见, 本demo开启了debug模式下的js & assets bundling, 所�
 React版本是15.4.1. ReactNative的版本是0.41.2.
 
 ## 数据源
-Sadly, all pictures and text are placed in the demo so far. Still searching for free Taobao API.
 遗憾的是，目前所有图片和文字都是放在本地的，没找到免费的淘宝API.
 
-## Insight & Pitfalls
+## 内部实现
 
-### ViewPager's implementation
-ReactNative provides [ViewPagerAndroid](https://facebook.github.io/react-native/docs/viewpagerandroid.html) as a component to fullfill similar function of native `ViewPager`. In fact it just wraps `ReactViewPager`. The drawback of simply using `ViewPagerAndroid` is lack of flexibility: e.g., it's impossible to slide the content in vertical direction. Inspired by [race604/react-native-viewpager](https://github.com/race604/react-native-viewpager), the viewpager in this demo enhances it, adds more flexibility such as control of slide direction, pager indicator style & position, etc. In this demo, there are both horizontal & vertical sliding viewpagers.
+### ViewPager的实现
+ReactNative提供了[ViewPagerAndroid](http://reactnative.cn/docs/0.41/viewpagerandroid.html#content)来实现原生`ViewPager`的功能. 实际上它就是包装了原生的`ReactViewPager`. 直接用`ViewPagerAndroid`的坏处是缺少灵活性: 比如说，不可能让它的内容竖直滑动. 受[race604/react-native-viewpager](https://github.com/race604/react-native-viewpager)的启发,　本demo中的viewPager增强了它的一些功能, 提供了更多的灵活性比如控制滑动方向, 指示圆点的形状和位置等. 本demo中，既有横向滑动的view pager，也有竖直滑动的.
 
-Related code: [CustomViewPager.js](./view/CustomViewPager.js).
+代码: [CustomViewPager.js](./view/CustomViewPager.js).
 
 ### PullToRefresh's implementation
 At first the demo tries to implement a pull-to-refresh-scrollview in pure js, using [ScrollView](https://facebook.github.io/react-native/docs/scrollview.html), [PanResponder](https://facebook.github.io/react-native/docs/panresponder.html) and [Animated](https://facebook.github.io/react-native/docs/animated.html). Basic idea is to concatenate a loading layout and a `ScrollView`: when loading layout is hidden, `ScrollView` is receiving gestures. When loading layout is pulled out to show, panresponder is receiving gestures, so scrollview receives no gesture, and loading layout is pulled out using `Animation`. However, this idea encounters a gesture processing problem : [react-native/issues/1046](https://github.com/facebook/react-native/issues/1046), which indicates:
