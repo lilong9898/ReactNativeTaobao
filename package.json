@@ -7,12 +7,12 @@
     "test": "jest"
   },
   "dependencies": {
-    "d3-shape": "^1.0.4",
-    "lodash": "^4.17.4",
+    "d3-shape": "1.0.4",
+    "lodash": "4.17.4",
     "react": "15.4.1",
     "react-native": "0.41.2",
-    "react-native-svg": "^5.1.5",
-    "react-native-tab-navigator": "^0.3.3"
+    "react-native-svg": "5.1.5",
+    "react-native-tab-navigator": "0.3.3"
   },
   "devDependencies": {
     "babel-jest": "18.0.0",
