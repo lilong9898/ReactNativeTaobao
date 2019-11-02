@@ -1190,9 +1190,9 @@ d3-path@1:
   version "1.0.3"
   resolved "http://registry.npm.taobao.org/d3-path/download/d3-path-1.0.3.tgz#60103d0dea9a6cd6ca58de86c6d56724002d3fde"
 
-d3-shape@^1.0.4:
+d3-shape@1.0.4:
   version "1.0.4"
-  resolved "http://registry.npm.taobao.org/d3-shape/download/d3-shape-1.0.4.tgz#145ee100ccbec42f8e3f1996cd05c786f79fe1c6"
+  resolved "https://registry.yarnpkg.com/d3-shape/-/d3-shape-1.0.4.tgz#145ee100ccbec42f8e3f1996cd05c786f79fe1c6"
   dependencies:
     d3-path "1"
 
@@ -2490,13 +2490,13 @@ lodash.templatesettings@^3.0.0:
     lodash._reinterpolate "^3.0.0"
     lodash.escape "^3.0.0"
 
+lodash@4.17.13, lodash@^4.14.0, lodash@^4.16.6, lodash@^4.2.0, lodash@^4.3.0, lodash@^4.6.1:
+  version "4.17.13"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.13.tgz#0bdc3a6adc873d2f4e0c4bac285df91b64fc7b93"
+
 lodash@^3.5.0:
   version "3.10.1"
   resolved "http://registry.npm.taobao.org/lodash/download/lodash-3.10.1.tgz#5bf45e8e49ba4189e17d482789dfd15bd140b7b6"
-
-lodash@^4.14.0, lodash@^4.16.6, lodash@^4.17.4, lodash@^4.2.0, lodash@^4.3.0, lodash@^4.6.1:
-  version "4.17.4"
-  resolved "http://registry.npm.taobao.org/lodash/download/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
 
 longest@^1.0.1:
   version "1.0.1"
@@ -2986,29 +2986,18 @@ react-deep-force-update@^1.0.0:
   version "1.0.1"
   resolved "http://registry.npm.taobao.org/react-deep-force-update/download/react-deep-force-update-1.0.1.tgz#f911b5be1d2a6fe387507dd6e9a767aa2924b4c7"
 
-react-native-pull@^1.1.3:
-  version "1.1.6"
-  resolved "http://registry.npm.taobao.org/react-native-pull/download/react-native-pull-1.1.6.tgz#18171be4a391a141a517e3ae8c3b2f54f4d32f86"
-
-react-native-svg@^5.1.5:
+react-native-svg@5.1.5:
   version "5.1.5"
-  resolved "http://registry.npm.taobao.org/react-native-svg/download/react-native-svg-5.1.5.tgz#1925aa4c400ee7c190e510bbadbca96ceb0751d5"
+  resolved "https://registry.yarnpkg.com/react-native-svg/-/react-native-svg-5.1.5.tgz#1925aa4c400ee7c190e510bbadbca96ceb0751d5"
   dependencies:
     color "^0.11.1"
     lodash "^4.16.6"
 
-react-native-tab-navigator@^0.3.3:
+react-native-tab-navigator@0.3.3:
   version "0.3.3"
-  resolved "http://registry.npm.taobao.org/react-native-tab-navigator/download/react-native-tab-navigator-0.3.3.tgz#b222bad21fbe773c8d28f9a0de30ce62b08724d3"
+  resolved "https://registry.yarnpkg.com/react-native-tab-navigator/-/react-native-tab-navigator-0.3.3.tgz#b222bad21fbe773c8d28f9a0de30ce62b08724d3"
   dependencies:
     immutable "^3.8.1"
-
-react-native-viewpager@^0.2.13:
-  version "0.2.13"
-  resolved "http://registry.npm.taobao.org/react-native-viewpager/download/react-native-viewpager-0.2.13.tgz#75e421ae90e89efcd77d2c077c0525382b7c39c5"
-  dependencies:
-    react-timer-mixin "^0.13.3"
-    warning "^2.1.0"
 
 react-native@0.41.2:
   version "0.41.2"
@@ -3101,7 +3090,7 @@ react-test-renderer@15.4.1:
   version "15.4.1"
   resolved "http://registry.npm.taobao.org/react-test-renderer/download/react-test-renderer-15.4.1.tgz#e38cd7057868d4a655d3764689735b4b97260706"
 
-react-timer-mixin@^0.13.2, react-timer-mixin@^0.13.3:
+react-timer-mixin@^0.13.2:
   version "0.13.3"
   resolved "http://registry.npm.taobao.org/react-timer-mixin/download/react-timer-mixin-0.13.3.tgz#0da8b9f807ec07dc3e854d082c737c65605b3d22"
 
@@ -3734,12 +3723,6 @@ walker@~1.0.5:
   resolved "http://registry.npm.taobao.org/walker/download/walker-1.0.7.tgz#2f7f9b8fd10d677262b18a884e28d19618e028fb"
   dependencies:
     makeerror "1.0.x"
-
-warning@^2.1.0:
-  version "2.1.0"
-  resolved "http://registry.npm.taobao.org/warning/download/warning-2.1.0.tgz#21220d9c63afc77a8c92111e011af705ce0c6901"
-  dependencies:
-    loose-envify "^1.0.0"
 
 watch@~0.10.0:
   version "0.10.0"
